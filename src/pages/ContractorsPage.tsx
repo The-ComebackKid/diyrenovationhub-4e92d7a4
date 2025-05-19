@@ -97,7 +97,7 @@ const contractorsData = [
 
 const ContractorsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSpecialty, setSelectedSpecialty] = useState<string>("");
+  const [selectedSpecialty, setSelectedSpecialty] = useState<string>("all");
   const [filteredContractors, setFilteredContractors] = useState(contractorsData);
 
   const handleSearch = () => {
@@ -111,7 +111,7 @@ const ContractorsPage = () => {
       );
     }
     
-    if (selectedSpecialty) {
+    if (selectedSpecialty && selectedSpecialty !== "all") {
       results = results.filter(contractor => 
         contractor.specialty === selectedSpecialty
       );
@@ -150,7 +150,7 @@ const ContractorsPage = () => {
                 <SelectValue placeholder="Specialty (Any)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any Specialty</SelectItem>
+                <SelectItem value="all">Any Specialty</SelectItem>
                 {specialties.map((specialty) => (
                   <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
                 ))}

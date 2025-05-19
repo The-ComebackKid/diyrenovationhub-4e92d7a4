@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { X, Send, User } from 'lucide-react';
+import { X, Send } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -61,9 +61,10 @@ const ChatWidget = ({ show, setShow }: ChatWidgetProps) => {
           timestamp: new Date()
         }]);
 
-        setQuestionsLeft(prev => prev - 1);
+        const newQuestionsLeft = questionsLeft - 1;
+        setQuestionsLeft(newQuestionsLeft);
         
-        if (prev => prev - 1 === 0) {
+        if (newQuestionsLeft === 0) {
           toast({
             title: "Daily limit reached",
             description: "You've used all your free questions for today. Subscribe for unlimited access!",
