@@ -1,8 +1,9 @@
 
-import { useState } from 'react';
-import { X, Send, SmilePlus } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Send, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 interface ChatWidgetProps {
   show: boolean;
@@ -19,6 +20,18 @@ const ChatWidget = ({ show, setShow }: ChatWidgetProps) => {
   ]);
   const [input, setInput] = useState('');
   const [questionsLeft, setQuestionsLeft] = useState(3);
+  const { toast } = useToast();
+  const [mascotMood, setMascotMood] = useState<'happy' | 'thinking' | 'excited'>('happy');
+
+  useEffect(() => {
+    // Change mascot mood based on conversation
+    if (messages.length > 2) {
+      const randomMood = Math.random();
+      if (randomMood > 0.7) setMascotMood('thinking');
+      else if (randomMood > 0.3) setMascotMood('excited');
+      else setMascotMood('happy');
+    }
+  }, [messages]);
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -33,22 +46,30 @@ const ChatWidget = ({ show, setShow }: ChatWidgetProps) => {
     // Clear input
     setInput('');
 
-    // Simulate bot response (in a real app, this would be a call to an API)
+    // Simulate bot response
     setTimeout(() => {
-      const responses = [
-        "Great question! For DIY beginners, I recommend starting with simple painting projects or replacing cabinet hardware. These give quick visual impact with minimal risk.",
-        "When renovating a bathroom, always turn off water supply before starting. A complete renovation typically costs between $6,000-$15,000, but you can save by doing demolition yourself.",
-        "For mounting heavy items, always locate wall studs using a stud finder. Use appropriate anchors for drywall if you can't hit a stud directly."
-      ];
-
-      setMessages(prev => [...prev, {
-        text: responses[Math.floor(Math.random() * responses.length)],
-        sender: 'bot',
-        timestamp: new Date()
-      }]);
-
       if (questionsLeft > 0) {
+        const responses = [
+          "Great question! For DIY beginners, I recommend starting with simple painting projects or replacing cabinet hardware. These give quick visual impact with minimal risk.",
+          "When renovating a bathroom, always turn off water supply before starting. A complete renovation typically costs between $6,000-$15,000, but you can save by doing demolition yourself.",
+          "For mounting heavy items, always locate wall studs using a stud finder. Use appropriate anchors for drywall if you can't hit a stud directly."
+        ];
+
+        setMessages(prev => [...prev, {
+          text: responses[Math.floor(Math.random() * responses.length)],
+          sender: 'bot',
+          timestamp: new Date()
+        }]);
+
         setQuestionsLeft(prev => prev - 1);
+        
+        if (prev => prev - 1 === 0) {
+          toast({
+            title: "Daily limit reached",
+            description: "You've used all your free questions for today. Subscribe for unlimited access!",
+            duration: 5000,
+          });
+        }
       }
     }, 1000);
   };
@@ -56,37 +77,64 @@ const ChatWidget = ({ show, setShow }: ChatWidgetProps) => {
   if (!show) return null;
 
   return (
-    <div className="chat-container animate-fade-in">
-      <div className="chat-header">
+    <div className="fixed bottom-6 right-6 w-80 md:w-96 bg-bengals-black rounded-lg shadow-xl overflow-hidden z-50 animate-fade-in">
+      <div className="chat-header bg-bengals-orange text-white p-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center">
-            <span className="text-bengals-orange font-bold text-sm">DIY</span>
+          <div className="relative">
+            <div className="h-10 w-10 bg-white rounded-full overflow-hidden border-2 border-white">
+              {mascotMood === 'happy' && (
+                <div className="flex flex-col items-center justify-center h-full bg-bengals-orange text-white">
+                  <span className="text-xs font-bold">DIY</span>
+                  <span className="text-[8px]">Guy</span>
+                </div>
+              )}
+              {mascotMood === 'thinking' && (
+                <div className="flex flex-col items-center justify-center h-full bg-bengals-orange text-white">
+                  <span className="text-xs font-bold">DIY</span>
+                  <span className="text-[8px]">🤔</span>
+                </div>
+              )}
+              {mascotMood === 'excited' && (
+                <div className="flex flex-col items-center justify-center h-full bg-bengals-orange text-white">
+                  <span className="text-xs font-bold">DIY</span>
+                  <span className="text-[8px]">🔨</span>
+                </div>
+              )}
+            </div>
           </div>
           <div>
-            <span className="font-bold">DIY Assistant</span>
+            <span className="font-bold text-sm">The DIY Guy</span>
             <p className="text-xs opacity-90">{questionsLeft} questions remaining</p>
           </div>
         </div>
         <button 
           onClick={() => setShow(false)}
           className="text-white hover:bg-black/10 p-1 rounded-full"
+          aria-label="Close chat"
         >
           <X size={20} />
         </button>
       </div>
       
-      <div className="chat-messages">
+      <div className="bg-white h-80 overflow-y-auto p-4 space-y-4">
         {messages.map((message, index) => (
           <div 
             key={index}
-            className={`chat-message ${message.sender === 'user' ? 'chat-message-user' : 'chat-message-bot'}`}
+            className={`p-3 rounded-lg max-w-[80%] ${
+              message.sender === 'user' 
+                ? 'bg-bengals-orange/10 ml-auto' 
+                : 'bg-gray-100 mr-auto'
+            }`}
           >
-            {message.text}
+            <p className="text-sm">{message.text}</p>
+            <p className="text-xs text-gray-500 mt-1">
+              {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </p>
           </div>
         ))}
       </div>
       
-      <div className="chat-input-container">
+      <div className="p-4 bg-gray-50 border-t">
         {questionsLeft === 0 && (
           <div className="mb-3 text-center">
             <p className="text-xs text-gray-500 mb-1">You've used all your free questions</p>
@@ -107,6 +155,7 @@ const ChatWidget = ({ show, setShow }: ChatWidgetProps) => {
             onClick={handleSend}
             disabled={!input.trim() || questionsLeft === 0}
             className="bg-bengals-orange hover:bg-orange-500"
+            aria-label="Send message"
           >
             <Send size={18} />
           </Button>
