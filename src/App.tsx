@@ -14,6 +14,7 @@ import SubscriptionPage from "./pages/SubscriptionPage";
 import PricingPage from "./pages/PricingPage";
 import BlogPage from "./pages/BlogPage";
 import CommunityPage from "./pages/CommunityPage";
+import CreateProjectPage from "./pages/CreateProjectPage";
 import ChatPage from "./pages/ChatPage";
 import StorePage from "./pages/StorePage";
 import ContractorsPage from "./pages/ContractorsPage";
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/pricing" element={<Layout><PricingPage /></Layout>} />
             <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
             <Route path="/community" element={<Layout><CommunityPage /></Layout>} />
+            <Route path="/create-project" element={<Layout><ProtectedRoute><CreateProjectPage /></ProtectedRoute></Layout>} />
             <Route path="/contractors" element={<Layout><ContractorsPage /></Layout>} />
             <Route path="/store" element={<Layout><StorePage /></Layout>} />
             <Route path="/chat" element={<Layout><ProtectedRoute><ChatPage /></ProtectedRoute></Layout>} />

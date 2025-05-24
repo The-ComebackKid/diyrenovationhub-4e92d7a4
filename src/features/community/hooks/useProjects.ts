@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -54,10 +55,18 @@ export const useProjects = () => {
       // Transform the data to match our TypeScript interface
       const transformedProjects: Project[] = (data || []).map(project => ({
         ...project,
-        materials_list: Array.isArray(project.materials_list) ? project.materials_list : [],
-        tools_needed: Array.isArray(project.tools_needed) ? project.tools_needed : [],
-        steps: Array.isArray(project.steps) ? project.steps : [],
-        images: Array.isArray(project.images) ? project.images : []
+        materials_list: Array.isArray(project.materials_list) 
+          ? (project.materials_list as string[])
+          : [],
+        tools_needed: Array.isArray(project.tools_needed) 
+          ? (project.tools_needed as string[])
+          : [],
+        steps: Array.isArray(project.steps) 
+          ? (project.steps as { step: number; description: string; image?: string }[])
+          : [],
+        images: Array.isArray(project.images) 
+          ? (project.images as string[])
+          : []
       }));
 
       setProjects(transformedProjects);

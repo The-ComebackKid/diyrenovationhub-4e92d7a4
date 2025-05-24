@@ -55,10 +55,12 @@ const CommunityPage = () => {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold">Featured Projects</h2>
               {user ? (
-                <Button className="bg-bengals-orange hover:bg-orange-500">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Share Project
-                </Button>
+                <Link to="/create-project">
+                  <Button className="bg-bengals-orange hover:bg-orange-500">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Share Project
+                  </Button>
+                </Link>
               ) : (
                 <Link to="/auth">
                   <Button className="bg-bengals-orange hover:bg-orange-500">
@@ -142,9 +144,11 @@ const CommunityPage = () => {
               <h3 className="font-semibold mb-2">Join Our Community</h3>
               <p className="text-sm mb-4">Share your projects, get expert advice, and connect with fellow DIY enthusiasts</p>
               {user ? (
-                <Button className="w-full bg-white text-bengals-orange hover:bg-gray-100">
-                  Share Your First Project
-                </Button>
+                <Link to="/create-project">
+                  <Button className="w-full bg-white text-bengals-orange hover:bg-gray-100">
+                    Share Your First Project
+                  </Button>
+                </Link>
               ) : (
                 <Link to="/auth">
                   <Button className="w-full bg-white text-bengals-orange hover:bg-gray-100">
