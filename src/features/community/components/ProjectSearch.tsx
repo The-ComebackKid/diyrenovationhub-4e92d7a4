@@ -108,12 +108,12 @@ const ProjectSearch = ({ onFiltersChange, initialFilters = {} }: ProjectSearchPr
             </SelectContent>
           </Select>
 
-          <Select value={filters.category} onValueChange={(value) => updateFilters({ category: value })}>
+          <Select value={filters.category} onValueChange={(value) => updateFilters({ category: value === 'all_categories' ? '' : value })}>
             <SelectTrigger className="w-40">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
+              <SelectItem value="all_categories">All Categories</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category} value={category}>
                   {category}
@@ -122,12 +122,12 @@ const ProjectSearch = ({ onFiltersChange, initialFilters = {} }: ProjectSearchPr
             </SelectContent>
           </Select>
 
-          <Select value={filters.difficulty} onValueChange={(value) => updateFilters({ difficulty: value })}>
+          <Select value={filters.difficulty} onValueChange={(value) => updateFilters({ difficulty: value === 'all_levels' ? '' : value })}>
             <SelectTrigger className="w-40">
               <SelectValue placeholder="Difficulty" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Levels</SelectItem>
+              <SelectItem value="all_levels">All Levels</SelectItem>
               {difficultyLevels.map((level) => (
                 <SelectItem key={level} value={level}>
                   {level}
