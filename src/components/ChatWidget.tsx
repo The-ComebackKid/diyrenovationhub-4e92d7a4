@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { X, Send } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -134,15 +133,56 @@ const ChatWidget = ({ show, setShow }: ChatWidgetProps) => {
   if (!show) return null;
 
   const getMascotDisplay = () => {
+    const baseStyle = "h-12 w-12 bg-white rounded-full overflow-hidden border-2 border-white flex items-center justify-center relative";
+    
     switch (mascotMood) {
       case 'thinking':
-        return { emoji: '🤔', bgColor: 'bg-blue-500' };
+        return { 
+          component: (
+            <div className={baseStyle}>
+              <div className="text-2xl">🤔</div>
+              <div className="absolute inset-0 bg-blue-500 opacity-20 rounded-full"></div>
+            </div>
+          ), 
+          bgColor: 'bg-blue-500' 
+        };
       case 'excited':
-        return { emoji: '🔥', bgColor: 'bg-red-500' };
+        return { 
+          component: (
+            <div className={baseStyle}>
+              <div className="text-2xl animate-bounce">🔥</div>
+              <div className="absolute inset-0 bg-red-500 opacity-20 rounded-full"></div>
+            </div>
+          ), 
+          bgColor: 'bg-red-500' 
+        };
       case 'helpful':
-        return { emoji: '🛠️', bgColor: 'bg-green-500' };
+        return { 
+          component: (
+            <div className={baseStyle}>
+              <div className="text-2xl">🛠️</div>
+              <div className="absolute inset-0 bg-green-500 opacity-20 rounded-full"></div>
+            </div>
+          ), 
+          bgColor: 'bg-green-500' 
+        };
       default:
-        return { emoji: '😊', bgColor: 'bg-bengals-orange' };
+        return { 
+          component: (
+            <div className={baseStyle}>
+              <div className="w-10 h-10 rounded-full bg-bengals-orange flex items-center justify-center">
+                <svg viewBox="0 0 24 24" className="w-6 h-6 text-white">
+                  <circle cx="12" cy="12" r="10" fill="currentColor"/>
+                  <circle cx="9" cy="9" r="1.5" fill="white"/>
+                  <circle cx="15" cy="9" r="1.5" fill="white"/>
+                  <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                  <path d="M12 2C8 2 6 4 6 6v2c0 1 1 2 2 2h8c1 0 2-1 2-2V6c0-2-2-4-6-4z" fill="#FFB000"/>
+                </svg>
+              </div>
+            </div>
+          ), 
+          bgColor: 'bg-bengals-orange' 
+        };
     }
   };
 
@@ -153,9 +193,7 @@ const ChatWidget = ({ show, setShow }: ChatWidgetProps) => {
       <div className={`chat-header ${mascotDisplay.bgColor} text-white p-4 flex justify-between items-center`}>
         <div className="flex items-center space-x-3">
           <div className="relative">
-            <div className="h-12 w-12 bg-white rounded-full overflow-hidden border-2 border-white flex items-center justify-center">
-              <div className="text-2xl">{mascotDisplay.emoji}</div>
-            </div>
+            {mascotDisplay.component}
             <div className="absolute -bottom-1 -right-1 bg-green-400 w-4 h-4 rounded-full border-2 border-white"></div>
           </div>
           <div>

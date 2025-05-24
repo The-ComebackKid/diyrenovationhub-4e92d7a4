@@ -67,10 +67,13 @@ export const useProjects = () => {
         images: Array.isArray(project.images) 
           ? (project.images as string[])
           : [],
-        user_profiles: project.user_profiles && typeof project.user_profiles === 'object' && 'display_name' in project.user_profiles
+        user_profiles: project.user_profiles && 
+          typeof project.user_profiles === 'object' && 
+          project.user_profiles !== null &&
+          'display_name' in project.user_profiles
           ? {
-              display_name: project.user_profiles.display_name || '',
-              avatar_url: project.user_profiles.avatar_url || ''
+              display_name: (project.user_profiles as any).display_name || '',
+              avatar_url: (project.user_profiles as any).avatar_url || ''
             }
           : null
       }));

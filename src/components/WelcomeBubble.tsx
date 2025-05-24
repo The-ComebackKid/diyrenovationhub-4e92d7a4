@@ -47,13 +47,14 @@ const WelcomeBubble = ({ onClose, onOpenChat }: WelcomeBubbleProps) => {
         
         <div className="flex items-start space-x-3">
           <div className="flex-shrink-0">
-            <div className="h-10 w-10 bg-bengals-orange rounded-full flex items-center justify-center">
-              <div className="text-white text-xs font-bold">
-                <div className="text-center">
-                  <div>DIY</div>
-                  <div className="text-[8px]">Guy</div>
-                </div>
-              </div>
+            <div className="h-10 w-10 bg-bengals-orange rounded-full flex items-center justify-center relative overflow-hidden">
+              <svg viewBox="0 0 24 24" className="w-6 h-6 text-white">
+                <circle cx="12" cy="12" r="10" fill="currentColor"/>
+                <circle cx="9" cy="9" r="1.5" fill="white"/>
+                <circle cx="15" cy="9" r="1.5" fill="white"/>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                <path d="M12 2C8 2 6 4 6 6v2c0 1 1 2 2 2h8c1 0 2-1 2-2V6c0-2-2-4-6-4z" fill="#FFB000"/>
+              </svg>
             </div>
           </div>
           

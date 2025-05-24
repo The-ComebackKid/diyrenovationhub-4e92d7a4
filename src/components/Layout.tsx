@@ -53,7 +53,14 @@ const Layout = ({ children }: LayoutProps) => {
           className="fixed bottom-6 right-6 z-40 bg-bengals-orange text-white p-3 rounded-full shadow-lg hover:bg-orange-500 transition-colors animate-pulse"
           aria-label="Open chat assistant"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="M13 8h.01"></path><path d="M17 8h.01"></path><path d="M9 8h.01"></path></svg>
+          <div className="w-6 h-6 flex items-center justify-center">
+            <svg viewBox="0 0 24 24" className="w-4 h-4 text-white">
+              <circle cx="12" cy="12" r="8" fill="currentColor"/>
+              <circle cx="10" cy="10" r="1" fill="white"/>
+              <circle cx="14" cy="10" r="1" fill="white"/>
+              <path d="M9 13s1 1.5 3 1.5 3-1.5 3-1.5" stroke="white" strokeWidth="1" strokeLinecap="round" fill="none"/>
+            </svg>
+          </div>
         </button>
       )}
     </div>
