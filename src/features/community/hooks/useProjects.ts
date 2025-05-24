@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -41,14 +40,7 @@ export const useProjects = (filters?: {
     queryFn: async () => {
       let query = supabase
         .from('projects')
-        .select(`
-          *,
-          user_profiles (
-            full_name,
-            display_name,
-            avatar_url
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (filters?.category) {
@@ -63,21 +55,35 @@ export const useProjects = (filters?: {
         query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
       }
 
-      const { data, error } = await query;
+      const { data: projects, error } = await query;
 
       if (error) {
         console.error('Error fetching projects:', error);
         throw error;
       }
 
-      return data.map(project => ({
-        ...project,
-        images: project.images ? (Array.isArray(project.images) ? project.images : [project.images]) : [],
-        tags: [],
-        featured: project.featured || false,
-        likes_count: project.likes_count || 0,
-        views_count: project.views_count || 0
-      })) as Project[];
+      // Fetch user profiles separately for each project
+      const projectsWithProfiles = await Promise.all(
+        projects.map(async (project) => {
+          const { data: userProfile } = await supabase
+            .from('user_profiles')
+            .select('full_name, display_name, avatar_url')
+            .eq('user_id', project.user_id)
+            .single();
+
+          return {
+            ...project,
+            images: project.images ? (Array.isArray(project.images) ? project.images : [project.images]) : [],
+            tags: [],
+            featured: project.featured || false,
+            likes_count: project.likes_count || 0,
+            views_count: project.views_count || 0,
+            user_profiles: userProfile
+          };
+        })
+      );
+
+      return projectsWithProfiles as Project[];
     },
   });
 };
@@ -134,16 +140,9 @@ export const useUserProjects = () => {
     queryFn: async () => {
       if (!user) return [];
 
-      const { data, error } = await supabase
+      const { data: projects, error } = await supabase
         .from('projects')
-        .select(`
-          *,
-          user_profiles (
-            full_name,
-            display_name,
-            avatar_url
-          )
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
@@ -152,15 +151,29 @@ export const useUserProjects = () => {
         throw error;
       }
 
-      return data.map(project => ({
-        ...project,
-        images: project.images ? (Array.isArray(project.images) ? project.images : [project.images]) : [],
-        tags: [],
-        featured: project.featured || false,
-        likes_count: project.likes_count || 0,
-        views_count: project.views_count || 0,
-        author: project.user_profiles?.display_name || project.user_profiles?.full_name || 'Anonymous User'
-      })) as (Project & { author: string })[];
+      // Fetch user profiles separately
+      const projectsWithProfiles = await Promise.all(
+        projects.map(async (project) => {
+          const { data: userProfile } = await supabase
+            .from('user_profiles')
+            .select('full_name, display_name, avatar_url')
+            .eq('user_id', project.user_id)
+            .single();
+
+          return {
+            ...project,
+            images: project.images ? (Array.isArray(project.images) ? project.images : [project.images]) : [],
+            tags: [],
+            featured: project.featured || false,
+            likes_count: project.likes_count || 0,
+            views_count: project.views_count || 0,
+            user_profiles: userProfile,
+            author: userProfile?.display_name || userProfile?.full_name || 'Anonymous User'
+          };
+        })
+      );
+
+      return projectsWithProfiles as (Project & { author: string })[];
     },
     enabled: !!user,
   });
