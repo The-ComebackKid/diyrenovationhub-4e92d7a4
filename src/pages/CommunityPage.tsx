@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Plus } from 'lucide-react';
-import { useProjects } from '@/features/community/hooks/useProjects';
+import { useProjects, useLikeProject } from '@/features/community/hooks/useProjects';
 import ProjectCard from '@/features/community/components/ProjectCard';
 import ProjectSearch, { SearchFilters } from '@/features/community/components/ProjectSearch';
 import { useAuth } from '@/hooks/useAuth';
@@ -18,10 +18,11 @@ const categories = [
   'Furniture', 'Storage', 'Electrical', 'Plumbing', 'Painting', 'Flooring'
 ];
 
-const difficultyLevels = ['Beginner', 'Intermediate', 'Advanced'];
+const difficultyLevels = ['beginner', 'intermediate', 'advanced'];
 
 const CommunityPage = () => {
-  const { projects, loading, likeProject, unlikeProject } = useProjects();
+  const { data: projects = [], isLoading } = useProjects();
+  const { likeProject, unlikeProject } = useLikeProject();
   const { user } = useAuth();
   const [filters, setFilters] = useState<SearchFilters>({
     searchTerm: '',
@@ -37,12 +38,12 @@ const CommunityPage = () => {
     .filter(project => {
       const matchesSearch = !filters.searchTerm || 
         project.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        project.description.toLowerCase().includes(filters.searchTerm.toLowerCase());
+        project.description?.toLowerCase().includes(filters.searchTerm.toLowerCase());
       
       const matchesCategory = !filters.category || project.category === filters.category;
       const matchesDifficulty = !filters.difficulty || project.difficulty_level === filters.difficulty;
-      const matchesCost = project.estimated_cost >= filters.minCost && 
-        project.estimated_cost <= filters.maxCost;
+      const matchesCost = !project.estimated_cost || 
+        (project.estimated_cost >= filters.minCost && project.estimated_cost <= filters.maxCost);
 
       return matchesSearch && matchesCategory && matchesDifficulty && matchesCost;
     })
@@ -51,18 +52,18 @@ const CommunityPage = () => {
         case 'oldest':
           return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         case 'popular':
-          return b.likes_count - a.likes_count;
+          return (b.likes_count || 0) - (a.likes_count || 0);
         case 'cost_asc':
-          return a.estimated_cost - b.estimated_cost;
+          return (a.estimated_cost || 0) - (b.estimated_cost || 0);
         case 'cost_desc':
-          return b.estimated_cost - a.estimated_cost;
+          return (b.estimated_cost || 0) - (a.estimated_cost || 0);
         case 'newest':
         default:
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       }
     });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="py-12 bg-gray-50 min-h-screen">
         <div className="container mx-auto px-4">
@@ -199,8 +200,8 @@ const CommunityPage = () => {
                     onClick={() => setFilters(prev => ({ 
                       ...prev, 
                       category: categories.includes(tag) ? tag : prev.category,
-                      difficulty: difficultyLevels.includes(tag) ? tag : prev.difficulty,
-                      searchTerm: !categories.includes(tag) && !difficultyLevels.includes(tag) ? tag : prev.searchTerm
+                      difficulty: difficultyLevels.includes(tag.toLowerCase()) ? tag.toLowerCase() : prev.difficulty,
+                      searchTerm: !categories.includes(tag) && !difficultyLevels.includes(tag.toLowerCase()) ? tag : prev.searchTerm
                     }))}
                     className="bg-gray-100 hover:bg-bengals-orange/10 hover:text-bengals-orange text-gray-600 text-xs px-2 py-1 rounded-full transition-colors"
                   >
