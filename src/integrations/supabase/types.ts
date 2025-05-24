@@ -108,6 +108,48 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          price: number
+          product_id: string
+          quantity: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          price: number
+          product_id: string
+          quantity: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          price?: number
+          product_id?: string
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           amount: number
@@ -144,6 +186,60 @@ export type Database = {
         }
         Relationships: []
       }
+      products: {
+        Row: {
+          active: boolean | null
+          affiliate_url: string | null
+          brand: string | null
+          category: string
+          created_at: string
+          description: string | null
+          featured: boolean | null
+          id: string
+          image_url: string | null
+          name: string
+          price: number
+          rating: number | null
+          review_count: number | null
+          stock_quantity: number | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean | null
+          affiliate_url?: string | null
+          brand?: string | null
+          category: string
+          created_at?: string
+          description?: string | null
+          featured?: boolean | null
+          id?: string
+          image_url?: string | null
+          name: string
+          price: number
+          rating?: number | null
+          review_count?: number | null
+          stock_quantity?: number | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean | null
+          affiliate_url?: string | null
+          brand?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          featured?: boolean | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number
+          rating?: number | null
+          review_count?: number | null
+          stock_quantity?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -174,6 +270,143 @@ export type Database = {
           subscription_end?: string | null
           subscription_tier?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      project_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          parent_id: string | null
+          project_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          project_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          project_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "project_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_comments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_likes: {
+        Row: {
+          created_at: string
+          id: string
+          project_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          project_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          project_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_likes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          difficulty_level: string
+          estimated_cost: number | null
+          estimated_time_hours: number | null
+          featured: boolean | null
+          id: string
+          images: Json | null
+          likes_count: number | null
+          materials_list: Json | null
+          published: boolean | null
+          steps: Json | null
+          title: string
+          tools_needed: Json | null
+          updated_at: string
+          user_id: string
+          views_count: number | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          difficulty_level: string
+          estimated_cost?: number | null
+          estimated_time_hours?: number | null
+          featured?: boolean | null
+          id?: string
+          images?: Json | null
+          likes_count?: number | null
+          materials_list?: Json | null
+          published?: boolean | null
+          steps?: Json | null
+          title: string
+          tools_needed?: Json | null
+          updated_at?: string
+          user_id: string
+          views_count?: number | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          difficulty_level?: string
+          estimated_cost?: number | null
+          estimated_time_hours?: number | null
+          featured?: boolean | null
+          id?: string
+          images?: Json | null
+          likes_count?: number | null
+          materials_list?: Json | null
+          published?: boolean | null
+          steps?: Json | null
+          title?: string
+          tools_needed?: Json | null
+          updated_at?: string
+          user_id?: string
+          views_count?: number | null
         }
         Relationships: []
       }
@@ -210,6 +443,48 @@ export type Database = {
           tier?: string
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          experience_level: string | null
+          id: string
+          location: string | null
+          projects_completed: number | null
+          specialties: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          experience_level?: string | null
+          id?: string
+          location?: string | null
+          projects_completed?: number | null
+          specialties?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          experience_level?: string | null
+          id?: string
+          location?: string | null
+          projects_completed?: number | null
+          specialties?: Json | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
