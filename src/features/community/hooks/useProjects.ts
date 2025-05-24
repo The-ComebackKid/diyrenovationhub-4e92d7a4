@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -25,7 +24,7 @@ export interface Project {
   user_profiles?: {
     display_name: string;
     avatar_url: string;
-  };
+  } | null;
 }
 
 export const useProjects = () => {
@@ -66,7 +65,8 @@ export const useProjects = () => {
           : [],
         images: Array.isArray(project.images) 
           ? (project.images as string[])
-          : []
+          : [],
+        user_profiles: project.user_profiles || null
       }));
 
       setProjects(transformedProjects);

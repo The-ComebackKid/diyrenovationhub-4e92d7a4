@@ -1,9 +1,11 @@
 
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Plus } from 'lucide-react';
 import { useProjects } from '@/features/community/hooks/useProjects';
 import ProjectCard from '@/features/community/components/ProjectCard';
+import ProjectSearch, { SearchFilters } from '@/features/community/components/ProjectSearch';
 import { useAuth } from '@/hooks/useAuth';
 
 const popularTags = [
@@ -14,6 +16,44 @@ const popularTags = [
 const CommunityPage = () => {
   const { projects, loading, likeProject, unlikeProject } = useProjects();
   const { user } = useAuth();
+  const [filters, setFilters] = useState<SearchFilters>({
+    searchTerm: '',
+    category: '',
+    difficulty: '',
+    minCost: 0,
+    maxCost: 1000,
+    sortBy: 'newest'
+  });
+
+  // Filter and sort projects based on current filters
+  const filteredProjects = projects
+    .filter(project => {
+      const matchesSearch = !filters.searchTerm || 
+        project.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        project.description.toLowerCase().includes(filters.searchTerm.toLowerCase());
+      
+      const matchesCategory = !filters.category || project.category === filters.category;
+      const matchesDifficulty = !filters.difficulty || project.difficulty_level === filters.difficulty;
+      const matchesCost = project.estimated_cost >= filters.minCost && 
+        project.estimated_cost <= filters.maxCost;
+
+      return matchesSearch && matchesCategory && matchesDifficulty && matchesCost;
+    })
+    .sort((a, b) => {
+      switch (filters.sortBy) {
+        case 'oldest':
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case 'popular':
+          return b.likes_count - a.likes_count;
+        case 'cost_asc':
+          return a.estimated_cost - b.estimated_cost;
+        case 'cost_desc':
+          return b.estimated_cost - a.estimated_cost;
+        case 'newest':
+        default:
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+    });
 
   if (loading) {
     return (
@@ -71,9 +111,12 @@ const CommunityPage = () => {
               )}
             </div>
 
+            {/* Search and Filters */}
+            <ProjectSearch onFiltersChange={setFilters} initialFilters={filters} />
+
             {/* Projects Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              {projects.map((project) => (
+              {filteredProjects.map((project) => (
                 <ProjectCard
                   key={project.id}
                   project={project}
@@ -83,15 +126,31 @@ const CommunityPage = () => {
               ))}
             </div>
 
-            {projects.length === 0 && (
+            {filteredProjects.length === 0 && (
               <div className="text-center py-12">
-                <p className="text-gray-500 text-lg mb-4">No projects shared yet.</p>
-                <p className="text-gray-400">Be the first to share your DIY project!</p>
+                {projects.length === 0 ? (
+                  <>
+                    <p className="text-gray-500 text-lg mb-4">No projects shared yet.</p>
+                    <p className="text-gray-400">Be the first to share your DIY project!</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-gray-500 text-lg mb-4">No projects match your search criteria.</p>
+                    <p className="text-gray-400">Try adjusting your filters or search terms.</p>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Results Summary */}
+            {filteredProjects.length > 0 && (
+              <div className="text-center text-gray-600 mb-4">
+                Showing {filteredProjects.length} of {projects.length} projects
               </div>
             )}
 
             {/* Load More */}
-            {projects.length > 0 && (
+            {filteredProjects.length > 0 && (
               <div className="text-center">
                 <Button variant="outline">Load More Projects</Button>
               </div>
@@ -128,13 +187,18 @@ const CommunityPage = () => {
               <h3 className="font-semibold mb-4">Popular Tags</h3>
               <div className="flex flex-wrap gap-2">
                 {popularTags.map((tag, index) => (
-                  <Link 
-                    key={index} 
-                    to={`/community/tag/${tag.toLowerCase()}`}
+                  <button
+                    key={index}
+                    onClick={() => setFilters(prev => ({ 
+                      ...prev, 
+                      category: categories.includes(tag) ? tag : prev.category,
+                      difficulty: difficultyLevels.includes(tag) ? tag : prev.difficulty,
+                      searchTerm: !categories.includes(tag) && !difficultyLevels.includes(tag) ? tag : prev.searchTerm
+                    }))}
                     className="bg-gray-100 hover:bg-bengals-orange/10 hover:text-bengals-orange text-gray-600 text-xs px-2 py-1 rounded-full transition-colors"
                   >
                     #{tag}
-                  </Link>
+                  </button>
                 ))}
               </div>
             </div>

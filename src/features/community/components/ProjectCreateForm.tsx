@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,8 +7,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useForm } from 'react-hook-form';
-import { Plus, X, Upload } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useCreateProject, CreateProjectData } from '../hooks/useCreateProject';
+import ImageUpload from './ImageUpload';
 
 const categories = [
   'Kitchen', 'Bathroom', 'Bedroom', 'Living Room', 'Outdoor', 'Garden',
@@ -24,6 +24,7 @@ const ProjectCreateForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const [steps, setSteps] = useState<{ step: number; description: string }[]>([
     { step: 1, description: '' }
   ]);
+  const [images, setImages] = useState<string[]>([]);
   const [newMaterial, setNewMaterial] = useState('');
   const [newTool, setNewTool] = useState('');
 
@@ -87,7 +88,7 @@ const ProjectCreateForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       materials_list: materials,
       tools_needed: tools,
       steps: steps.filter(step => step.description.trim()),
-      images: [], // For now, we'll implement image upload later
+      images: images,
     };
 
     const result = await createProject(projectData);
@@ -104,6 +105,7 @@ const ProjectCreateForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Basic Info Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
@@ -163,6 +165,7 @@ const ProjectCreateForm = ({ onSuccess }: { onSuccess?: () => void }) => {
               )}
             />
 
+            {/* Project Details */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormField
                 control={form.control}
@@ -226,6 +229,18 @@ const ProjectCreateForm = ({ onSuccess }: { onSuccess?: () => void }) => {
                   </FormItem>
                 )}
               />
+            </div>
+
+            {/* Images Section */}
+            <div>
+              <FormLabel>Project Images</FormLabel>
+              <div className="mt-2">
+                <ImageUpload
+                  onImagesChange={setImages}
+                  maxImages={5}
+                  existingImages={images}
+                />
+              </div>
             </div>
 
             {/* Materials Section */}
