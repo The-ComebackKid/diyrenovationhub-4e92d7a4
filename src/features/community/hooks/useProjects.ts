@@ -43,7 +43,7 @@ export const useProjects = (filters?: {
         .from('projects')
         .select(`
           *,
-          user_profiles (
+          user_profiles!projects_user_id_fkey (
             full_name,
             display_name,
             avatar_url
@@ -138,7 +138,7 @@ export const useUserProjects = () => {
         .from('projects')
         .select(`
           *,
-          user_profiles (
+          user_profiles!projects_user_id_fkey (
             full_name,
             display_name,
             avatar_url
