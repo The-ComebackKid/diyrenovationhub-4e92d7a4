@@ -9,6 +9,8 @@ import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/HomePage";
 import AuthPage from "./pages/AuthPage";
+import ProfilePage from "./pages/ProfilePage";
+import SubscriptionPage from "./pages/SubscriptionPage";
 import PricingPage from "./pages/PricingPage";
 import BlogPage from "./pages/BlogPage";
 import CommunityPage from "./pages/CommunityPage";
@@ -30,6 +32,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Layout><HomePage /></Layout>} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/profile" element={<Layout><ProtectedRoute><ProfilePage /></ProtectedRoute></Layout>} />
+            <Route path="/subscription" element={<Layout><ProtectedRoute><SubscriptionPage /></ProtectedRoute></Layout>} />
             <Route path="/pricing" element={<Layout><PricingPage /></Layout>} />
             <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
             <Route path="/community" element={<Layout><CommunityPage /></Layout>} />
