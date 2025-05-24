@@ -43,7 +43,7 @@ export const useProjects = (filters?: {
         .from('projects')
         .select(`
           *,
-          user_profiles (
+          user_profiles!inner (
             full_name,
             display_name,
             avatar_url
@@ -73,7 +73,7 @@ export const useProjects = (filters?: {
       return data.map(project => ({
         ...project,
         images: project.images ? (Array.isArray(project.images) ? project.images : [project.images]) : [],
-        tags: project.tags || [],
+        tags: [],
         featured: project.featured || false,
         likes_count: project.likes_count || 0,
         views_count: project.views_count || 0
@@ -138,7 +138,7 @@ export const useUserProjects = () => {
         .from('projects')
         .select(`
           *,
-          user_profiles (
+          user_profiles!inner (
             full_name,
             display_name,
             avatar_url
@@ -155,7 +155,7 @@ export const useUserProjects = () => {
       return data.map(project => ({
         ...project,
         images: project.images ? (Array.isArray(project.images) ? project.images : [project.images]) : [],
-        tags: project.tags || [],
+        tags: [],
         featured: project.featured || false,
         likes_count: project.likes_count || 0,
         views_count: project.views_count || 0,
@@ -183,7 +183,10 @@ export const useLikeProject = () => {
       }
 
       // Update likes count
-      const { error: updateError } = await supabase.rpc('increment_likes', { project_id: projectId });
+      const { error: updateError } = await supabase
+        .from('projects')
+        .update({ likes_count: supabase.raw('likes_count + 1') })
+        .eq('id', projectId);
       
       if (!updateError) {
         queryClient.invalidateQueries({ queryKey: ['projects'] });
@@ -213,7 +216,10 @@ export const useLikeProject = () => {
       }
 
       // Update likes count
-      const { error: updateError } = await supabase.rpc('decrement_likes', { project_id: projectId });
+      const { error: updateError } = await supabase
+        .from('projects')
+        .update({ likes_count: supabase.raw('likes_count - 1') })
+        .eq('id', projectId);
       
       if (!updateError) {
         queryClient.invalidateQueries({ queryKey: ['projects'] });
