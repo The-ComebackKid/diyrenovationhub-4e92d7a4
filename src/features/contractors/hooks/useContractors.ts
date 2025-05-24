@@ -23,6 +23,16 @@ export interface DatabaseContractor {
   updated_at: string;
 }
 
+export interface CreateContractorProfileData {
+  name: string;
+  specialty: string;
+  location: string;
+  description?: string;
+  website?: string;
+  phone?: string;
+  image_url?: string;
+}
+
 export const useContractors = () => {
   return useQuery({
     queryKey: ['contractors'],
@@ -73,17 +83,23 @@ export const useCreateContractorProfile = () => {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async (profileData: Partial<DatabaseContractor>) => {
+    mutationFn: async (profileData: CreateContractorProfileData) => {
       if (!user) throw new Error('User not authenticated');
 
       const { data, error } = await supabase
         .from('contractors')
-        .insert([
-          {
-            user_id: user.id,
-            ...profileData,
-          },
-        ])
+        .insert({
+          user_id: user.id,
+          name: profileData.name,
+          specialty: profileData.specialty,
+          location: profileData.location,
+          description: profileData.description || null,
+          website: profileData.website || null,
+          phone: profileData.phone || null,
+          image_url: profileData.image_url || null,
+          verified: false,
+          monthly_fee_paid: false,
+        })
         .select()
         .single();
 
@@ -107,7 +123,7 @@ export const useUpdateContractorProfile = () => {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async ({ id, ...profileData }: Partial<DatabaseContractor> & { id: string }) => {
+    mutationFn: async ({ id, ...profileData }: Partial<CreateContractorProfileData> & { id: string }) => {
       if (!user) throw new Error('User not authenticated');
 
       const { data, error } = await supabase
