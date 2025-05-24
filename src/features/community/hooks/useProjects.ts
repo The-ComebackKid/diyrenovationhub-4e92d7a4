@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -52,7 +51,16 @@ export const useProjects = () => {
         return;
       }
 
-      setProjects(data || []);
+      // Transform the data to match our TypeScript interface
+      const transformedProjects: Project[] = (data || []).map(project => ({
+        ...project,
+        materials_list: Array.isArray(project.materials_list) ? project.materials_list : [],
+        tools_needed: Array.isArray(project.tools_needed) ? project.tools_needed : [],
+        steps: Array.isArray(project.steps) ? project.steps : [],
+        images: Array.isArray(project.images) ? project.images : []
+      }));
+
+      setProjects(transformedProjects);
     } catch (error) {
       console.error('Error:', error);
       toast.error('Failed to load projects');
