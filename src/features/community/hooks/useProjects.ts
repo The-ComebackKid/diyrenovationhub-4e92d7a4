@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -24,9 +25,9 @@ export interface Project {
   tools_needed?: string[];
   steps?: any[];
   user_profiles?: {
-    full_name: string;
     display_name?: string;
     avatar_url?: string;
+    bio?: string;
   } | null;
 }
 
@@ -67,7 +68,7 @@ export const useProjects = (filters?: {
         projects.map(async (project) => {
           const { data: userProfile } = await supabase
             .from('user_profiles')
-            .select('full_name, display_name, avatar_url')
+            .select('display_name, avatar_url, bio')
             .eq('user_id', project.user_id)
             .single();
 
@@ -156,7 +157,7 @@ export const useUserProjects = () => {
         projects.map(async (project) => {
           const { data: userProfile } = await supabase
             .from('user_profiles')
-            .select('full_name, display_name, avatar_url')
+            .select('display_name, avatar_url, bio')
             .eq('user_id', project.user_id)
             .single();
 
@@ -168,7 +169,7 @@ export const useUserProjects = () => {
             likes_count: project.likes_count || 0,
             views_count: project.views_count || 0,
             user_profiles: userProfile,
-            author: userProfile?.display_name || userProfile?.full_name || 'Anonymous User'
+            author: userProfile?.display_name || 'Anonymous User'
           };
         })
       );
