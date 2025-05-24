@@ -1,13 +1,19 @@
-
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import FaqSection from '@/components/FaqSection';
 import PricingSection from '@/components/PricingSection';
+import SEO from '@/components/SEO';
+import Newsletter from '@/components/Newsletter';
+import BlogPreview from '@/components/BlogPreview';
+import ContactForm from '@/components/ContactForm';
+import SocialShare from '@/components/SocialShare';
 
 const HomePage = () => {
   return (
     <div>
+      <SEO />
+      
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-50 to-gray-100 py-16">
         <div className="container mx-auto px-4">
@@ -39,6 +45,13 @@ const HomePage = () => {
                 <span className="text-sm text-gray-500">
                   Joined by 5,000+ DIY enthusiasts
                 </span>
+              </div>
+              
+              <div className="mt-6">
+                <SocialShare 
+                  title="DIY Renovation Hub - Transform Your Home with Expert Guidance"
+                  description="Get step-by-step renovation advice, AI chat assistance, and join our supportive DIY community."
+                />
               </div>
             </div>
             <div className="md:w-1/2 relative">
@@ -162,6 +175,9 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Blog Preview Section */}
+      <BlogPreview />
+
       {/* Testimonials Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -216,11 +232,17 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Newsletter Signup */}
+      <Newsletter />
+
       {/* FAQ Section */}
       <FaqSection />
 
       {/* Pricing Section */}
       <PricingSection />
+
+      {/* Contact Form */}
+      <ContactForm />
 
       {/* CTA Section */}
       <section className="py-16 bg-bengals-black text-white">
@@ -230,7 +252,7 @@ const HomePage = () => {
             Join thousands of homeowners who are saving money and creating the homes of their dreams with DIY Renovation Hub.
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <Link to="/login">
+            <Link to="/auth">
               <Button size="lg" variant="outline" className="border-bengals-orange text-bengals-orange hover:bg-bengals-orange hover:text-white">
                 Create Free Account
               </Button>

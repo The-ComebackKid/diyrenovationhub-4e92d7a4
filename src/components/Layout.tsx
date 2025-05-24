@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import ChatWidget from './ChatWidget';
 import WelcomeBubble from './WelcomeBubble';
+import Analytics from './Analytics';
 
 interface LayoutProps {
   children: ReactNode;
@@ -34,6 +35,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <Analytics />
       <Navbar />
       <main className="flex-grow">{children}</main>
       <Footer />
@@ -54,11 +56,12 @@ const Layout = ({ children }: LayoutProps) => {
           aria-label="Open chat assistant"
         >
           <div className="w-6 h-6 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="w-4 h-4 text-white">
-              <circle cx="12" cy="12" r="8" fill="currentColor"/>
-              <circle cx="10" cy="10" r="1" fill="white"/>
-              <circle cx="14" cy="10" r="1" fill="white"/>
-              <path d="M9 13s1 1.5 3 1.5 3-1.5 3-1.5" stroke="white" strokeWidth="1" strokeLinecap="round" fill="none"/>
+            <svg viewBox="0 0 24 24" className="w-6 h-6 text-white">
+              <circle cx="12" cy="12" r="10" fill="currentColor"/>
+              <circle cx="9" cy="9" r="1.5" fill="white"/>
+              <circle cx="15" cy="9" r="1.5" fill="white"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+              <path d="M12 2C8 2 6 4 6 6v2c0 1 1 2 2 2h8c1 0 2-1 2-2V6c0-2-2-4-6-4z" fill="#FFB000"/>
             </svg>
           </div>
         </button>
