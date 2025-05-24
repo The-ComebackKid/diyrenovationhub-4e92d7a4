@@ -13,6 +13,13 @@ const popularTags = [
   "Beginner", "Advanced", "Before & After", "Budget", "Design", "Outdoor"
 ];
 
+const categories = [
+  'Kitchen', 'Bathroom', 'Bedroom', 'Living Room', 'Outdoor', 'Garden',
+  'Furniture', 'Storage', 'Electrical', 'Plumbing', 'Painting', 'Flooring'
+];
+
+const difficultyLevels = ['Beginner', 'Intermediate', 'Advanced'];
+
 const CommunityPage = () => {
   const { projects, loading, likeProject, unlikeProject } = useProjects();
   const { user } = useAuth();

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -37,7 +38,7 @@ export const useProjects = () => {
         .from('projects')
         .select(`
           *,
-          user_profiles (
+          user_profiles!inner (
             display_name,
             avatar_url
           )
@@ -66,7 +67,12 @@ export const useProjects = () => {
         images: Array.isArray(project.images) 
           ? (project.images as string[])
           : [],
-        user_profiles: project.user_profiles || null
+        user_profiles: project.user_profiles && typeof project.user_profiles === 'object' && 'display_name' in project.user_profiles
+          ? {
+              display_name: project.user_profiles.display_name || '',
+              avatar_url: project.user_profiles.avatar_url || ''
+            }
+          : null
       }));
 
       setProjects(transformedProjects);
