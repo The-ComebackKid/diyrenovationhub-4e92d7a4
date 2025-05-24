@@ -1,35 +1,70 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, Image, Send, Smile, Paperclip } from 'lucide-react';
+import { Camera, Image, Send } from 'lucide-react';
+import { useChatSessions, useCreateChatSession, useUpdateChatSession, ChatMessage } from '@/hooks/useChatSessions';
+import { useAuth } from '@/hooks/useAuth';
 
 const ChatPage = () => {
+  const { user } = useAuth();
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<Array<{text: string; sender: 'user' | 'bot'; timestamp: Date}>>([
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       text: "Hi there! I'm the DIY Assistant. I can help with your home renovation questions. What are you working on today?",
       sender: 'bot',
-      timestamp: new Date(Date.now() - 1000 * 60 * 5) // 5 minutes ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 5)
     }
   ]);
 
-  const handleSendMessage = () => {
-    if (!message.trim()) return;
+  const { data: chatSessions = [] } = useChatSessions();
+  const createSessionMutation = useCreateChatSession();
+  const updateSessionMutation = useUpdateChatSession();
 
-    // Add user message
-    setMessages(prev => [...prev, {
+  // Load the most recent session if available
+  useEffect(() => {
+    if (chatSessions.length > 0 && !currentSessionId) {
+      const latestSession = chatSessions[0];
+      setCurrentSessionId(latestSession.id);
+      setMessages(latestSession.messages);
+    }
+  }, [chatSessions, currentSessionId]);
+
+  const handleSendMessage = async () => {
+    if (!message.trim() || !user) return;
+
+    const userMessage: ChatMessage = {
       text: message,
       sender: 'user',
       timestamp: new Date()
-    }]);
+    };
 
-    // Clear input
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setMessage('');
 
+    // Create or update session
+    try {
+      if (!currentSessionId) {
+        const session = await createSessionMutation.mutateAsync({
+          title: message.slice(0, 50) + (message.length > 50 ? '...' : ''),
+          initialMessage: userMessage
+        });
+        setCurrentSessionId(session.id);
+      } else {
+        await updateSessionMutation.mutateAsync({
+          id: currentSessionId,
+          messages: newMessages
+        });
+      }
+    } catch (error) {
+      console.error('Error saving chat:', error);
+    }
+
     // Simulate bot response
-    setTimeout(() => {
+    setTimeout(async () => {
       const botResponses = [
         "That's a great project! Here are some tips to help you get started...",
         "For that type of renovation, you'll want to consider these factors...",
@@ -39,12 +74,43 @@ const ChatPage = () => {
         "Here's a step-by-step approach I'd recommend for your project..."
       ];
 
-      setMessages(prev => [...prev, {
+      const botMessage: ChatMessage = {
         text: botResponses[Math.floor(Math.random() * botResponses.length)],
         sender: 'bot',
         timestamp: new Date()
-      }]);
+      };
+
+      const updatedMessages = [...newMessages, botMessage];
+      setMessages(updatedMessages);
+
+      // Update session with bot response
+      if (currentSessionId) {
+        try {
+          await updateSessionMutation.mutateAsync({
+            id: currentSessionId,
+            messages: updatedMessages
+          });
+        } catch (error) {
+          console.error('Error saving bot response:', error);
+        }
+      }
     }, 1000);
+  };
+
+  const startNewChat = () => {
+    setCurrentSessionId(null);
+    setMessages([
+      {
+        text: "Hi there! I'm the DIY Assistant. I can help with your home renovation questions. What are you working on today?",
+        sender: 'bot',
+        timestamp: new Date()
+      }
+    ]);
+  };
+
+  const loadChatSession = (session: any) => {
+    setCurrentSessionId(session.id);
+    setMessages(session.messages);
   };
 
   return (
@@ -95,6 +161,11 @@ const ChatPage = () => {
                   
                   {/* Chat input */}
                   <div className="border-t p-4">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <Button onClick={startNewChat} variant="outline" size="sm">
+                        New Chat
+                      </Button>
+                    </div>
                     <div className="flex items-center space-x-2">
                       <Button variant="outline" size="icon" className="shrink-0">
                         <Image size={18} />
@@ -121,22 +192,32 @@ const ChatPage = () => {
               </TabsContent>
 
               <TabsContent value="history">
-                <div className="p-6 text-center">
-                  <h3 className="text-lg font-semibold mb-2">Your Chat History</h3>
-                  <p className="text-gray-500 mb-4">View and continue your previous conversations</p>
+                <div className="p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-semibold">Your Chat History</h3>
+                    <Button onClick={startNewChat} className="bg-bengals-orange hover:bg-orange-500">
+                      New Chat
+                    </Button>
+                  </div>
                   <div className="space-y-4">
-                    <div className="border rounded-lg p-4 text-left hover:border-bengals-orange cursor-pointer">
-                      <h4 className="font-medium">Kitchen Backsplash Project</h4>
-                      <p className="text-sm text-gray-500">Last message: 2 days ago</p>
-                    </div>
-                    <div className="border rounded-lg p-4 text-left hover:border-bengals-orange cursor-pointer">
-                      <h4 className="font-medium">Bathroom Renovation Questions</h4>
-                      <p className="text-sm text-gray-500">Last message: 1 week ago</p>
-                    </div>
-                    <div className="border rounded-lg p-4 text-left hover:border-bengals-orange cursor-pointer">
-                      <h4 className="font-medium">Deck Building Project</h4>
-                      <p className="text-sm text-gray-500">Last message: 2 weeks ago</p>
-                    </div>
+                    {chatSessions.map((session) => (
+                      <div 
+                        key={session.id}
+                        className="border rounded-lg p-4 text-left hover:border-bengals-orange cursor-pointer"
+                        onClick={() => loadChatSession(session)}
+                      >
+                        <h4 className="font-medium">{session.title || 'Untitled Chat'}</h4>
+                        <p className="text-sm text-gray-500">
+                          Last message: {new Date(session.updated_at).toLocaleDateString()}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          {session.messages.length} messages
+                        </p>
+                      </div>
+                    ))}
+                    {chatSessions.length === 0 && (
+                      <p className="text-gray-500 text-center py-8">No chat history yet. Start a conversation!</p>
+                    )}
                   </div>
                 </div>
               </TabsContent>

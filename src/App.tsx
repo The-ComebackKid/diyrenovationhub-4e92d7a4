@@ -4,9 +4,11 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./hooks/useAuth";
 import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
+import AuthPage from "./pages/AuthPage";
 import PricingPage from "./pages/PricingPage";
 import BlogPage from "./pages/BlogPage";
 import CommunityPage from "./pages/CommunityPage";
@@ -20,24 +22,26 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout><HomePage /></Layout>} />
-          <Route path="/login" element={<Layout><LoginPage /></Layout>} />
-          <Route path="/pricing" element={<Layout><PricingPage /></Layout>} />
-          <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
-          <Route path="/community" element={<Layout><CommunityPage /></Layout>} />
-          <Route path="/chat" element={<Layout><ChatPage /></Layout>} />
-          <Route path="/store" element={<Layout><StorePage /></Layout>} />
-          <Route path="/contractors" element={<Layout><ContractorsPage /></Layout>} />
-          <Route path="/admin" element={<Layout><AdminPage /></Layout>} />
-          <Route path="*" element={<Layout><NotFound /></Layout>} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout><HomePage /></Layout>} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/pricing" element={<Layout><PricingPage /></Layout>} />
+            <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
+            <Route path="/community" element={<Layout><CommunityPage /></Layout>} />
+            <Route path="/contractors" element={<Layout><ContractorsPage /></Layout>} />
+            <Route path="/store" element={<Layout><StorePage /></Layout>} />
+            <Route path="/chat" element={<Layout><ProtectedRoute><ChatPage /></ProtectedRoute></Layout>} />
+            <Route path="/admin" element={<Layout><ProtectedRoute><AdminPage /></ProtectedRoute></Layout>} />
+            <Route path="*" element={<Layout><NotFound /></Layout>} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
