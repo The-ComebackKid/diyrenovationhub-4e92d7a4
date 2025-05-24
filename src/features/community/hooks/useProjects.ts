@@ -43,7 +43,7 @@ export const useProjects = (filters?: {
         .from('projects')
         .select(`
           *,
-          user_profiles!inner (
+          user_profiles (
             full_name,
             display_name,
             avatar_url
@@ -138,7 +138,7 @@ export const useUserProjects = () => {
         .from('projects')
         .select(`
           *,
-          user_profiles!inner (
+          user_profiles (
             full_name,
             display_name,
             avatar_url
@@ -182,10 +182,18 @@ export const useLikeProject = () => {
         return false;
       }
 
-      // Update likes count
+      // Get current likes count and increment it
+      const { data: currentProject } = await supabase
+        .from('projects')
+        .select('likes_count')
+        .eq('id', projectId)
+        .single();
+
+      const newLikesCount = (currentProject?.likes_count || 0) + 1;
+
       const { error: updateError } = await supabase
         .from('projects')
-        .update({ likes_count: supabase.raw('likes_count + 1') })
+        .update({ likes_count: newLikesCount })
         .eq('id', projectId);
       
       if (!updateError) {
@@ -215,10 +223,18 @@ export const useLikeProject = () => {
         return false;
       }
 
-      // Update likes count
+      // Get current likes count and decrement it
+      const { data: currentProject } = await supabase
+        .from('projects')
+        .select('likes_count')
+        .eq('id', projectId)
+        .single();
+
+      const newLikesCount = Math.max((currentProject?.likes_count || 0) - 1, 0);
+
       const { error: updateError } = await supabase
         .from('projects')
-        .update({ likes_count: supabase.raw('likes_count - 1') })
+        .update({ likes_count: newLikesCount })
         .eq('id', projectId);
       
       if (!updateError) {
