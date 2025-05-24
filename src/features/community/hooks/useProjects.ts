@@ -1,157 +1,130 @@
 
-import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
 export interface Project {
   id: string;
-  user_id: string;
   title: string;
   description: string;
+  image_url?: string;
+  budget?: number;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
   category: string;
-  difficulty_level: string;
-  estimated_cost: number;
-  estimated_time_hours: number;
-  materials_list: string[];
-  tools_needed: string[];
-  steps: { step: number; description: string; image?: string }[];
-  images: string[];
-  featured: boolean;
-  published: boolean;
-  likes_count: number;
-  views_count: number;
+  tags: string[];
+  user_id: string;
   created_at: string;
   updated_at: string;
   user_profiles?: {
-    display_name: string;
-    avatar_url: string;
+    full_name: string;
   } | null;
 }
 
-export const useProjects = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+export const useProjects = (filters?: {
+  category?: string;
+  difficulty?: string;
+  search?: string;
+}) => {
+  return useQuery({
+    queryKey: ['projects', filters],
+    queryFn: async () => {
+      let query = supabase
+        .from('projects')
+        .select(`
+          *,
+          user_profiles (
+            full_name
+          )
+        `)
+        .order('created_at', { ascending: false });
 
-  const fetchProjects = async () => {
-    try {
+      if (filters?.category) {
+        query = query.eq('category', filters.category);
+      }
+
+      if (filters?.difficulty) {
+        query = query.eq('difficulty', filters.difficulty);
+      }
+
+      if (filters?.search) {
+        query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error('Error fetching projects:', error);
+        throw error;
+      }
+
+      return data as Project[];
+    },
+  });
+};
+
+export const useCreateProject = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: async (projectData: Omit<Project, 'id' | 'created_at' | 'updated_at' | 'user_id'>) => {
+      if (!user) throw new Error('User must be authenticated');
+
+      const { data, error } = await supabase
+        .from('projects')
+        .insert([
+          {
+            ...projectData,
+            user_id: user.id,
+          },
+        ])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      toast.success('Project created successfully!');
+    },
+    onError: (error: Error) => {
+      console.error('Error creating project:', error);
+      toast.error('Failed to create project. Please try again.');
+    },
+  });
+};
+
+export const useUserProjects = () => {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ['user-projects', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+
       const { data, error } = await supabase
         .from('projects')
         .select(`
           *,
-          user_profiles!inner (
-            display_name,
-            avatar_url
+          user_profiles (
+            full_name
           )
         `)
-        .eq('published', true)
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching projects:', error);
-        toast.error('Failed to load projects');
-        return;
+        console.error('Error fetching user projects:', error);
+        throw error;
       }
 
-      // Transform the data to match our TypeScript interface
-      const transformedProjects: Project[] = (data || []).map(project => ({
+      return data.map(project => ({
         ...project,
-        materials_list: Array.isArray(project.materials_list) 
-          ? (project.materials_list as string[])
-          : [],
-        tools_needed: Array.isArray(project.tools_needed) 
-          ? (project.tools_needed as string[])
-          : [],
-        steps: Array.isArray(project.steps) 
-          ? (project.steps as { step: number; description: string; image?: string }[])
-          : [],
-        images: Array.isArray(project.images) 
-          ? (project.images as string[])
-          : [],
-        user_profiles: project.user_profiles && 
-          typeof project.user_profiles === 'object' && 
-          project.user_profiles !== null &&
-          'display_name' in project.user_profiles
-          ? {
-              display_name: (project.user_profiles as any).display_name || '',
-              avatar_url: (project.user_profiles as any).avatar_url || ''
-            }
-          : null
-      }));
-
-      setProjects(transformedProjects);
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to load projects');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const likeProject = async (projectId: string, userId: string) => {
-    try {
-      const { error } = await supabase
-        .from('project_likes')
-        .insert({ project_id: projectId, user_id: userId });
-
-      if (error) {
-        console.error('Error liking project:', error);
-        toast.error('Failed to like project');
-        return false;
-      }
-
-      // Update local state
-      setProjects(prev => prev.map(project => 
-        project.id === projectId 
-          ? { ...project, likes_count: project.likes_count + 1 }
-          : project
-      ));
-
-      return true;
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to like project');
-      return false;
-    }
-  };
-
-  const unlikeProject = async (projectId: string, userId: string) => {
-    try {
-      const { error } = await supabase
-        .from('project_likes')
-        .delete()
-        .eq('project_id', projectId)
-        .eq('user_id', userId);
-
-      if (error) {
-        console.error('Error unliking project:', error);
-        toast.error('Failed to unlike project');
-        return false;
-      }
-
-      // Update local state
-      setProjects(prev => prev.map(project => 
-        project.id === projectId 
-          ? { ...project, likes_count: Math.max(0, project.likes_count - 1) }
-          : project
-      ));
-
-      return true;
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to unlike project');
-      return false;
-    }
-  };
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  return {
-    projects,
-    loading,
-    fetchProjects,
-    likeProject,
-    unlikeProject
-  };
+        author: project.user_profiles?.full_name || 'Anonymous User'
+      })) as (Project & { author: string })[];
+    },
+    enabled: !!user,
+  });
 };
