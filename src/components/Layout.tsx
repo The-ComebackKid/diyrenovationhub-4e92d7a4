@@ -33,6 +33,42 @@ const Layout = ({ children }: LayoutProps) => {
     localStorage.setItem('hasSeenWelcome', 'true');
   };
 
+  const getDIYGuyFloatingButton = () => {
+    return (
+      <div className="w-6 h-6 flex items-center justify-center">
+        <svg 
+          viewBox="0 0 48 48" 
+          className="w-6 h-6"
+          style={{ display: 'block' }}
+        >
+          {/* Hard hat */}
+          <path 
+            d="M12 18c0-8 6-12 12-12s12 4 12 12v4c0 2-2 4-4 4H16c-2 0-4-2-4-4v-4z" 
+            fill="#FFB000" 
+            stroke="#E69500" 
+            strokeWidth="1"
+          />
+          {/* Face */}
+          <circle cx="24" cy="30" r="12" fill="#FDBCB4" />
+          {/* Eyes */}
+          <circle cx="20" cy="27" r="2" fill="white" />
+          <circle cx="28" cy="27" r="2" fill="white" />
+          {/* Pupils */}
+          <circle cx="20" cy="27" r="1" fill="#2D3748" />
+          <circle cx="28" cy="27" r="1" fill="#2D3748" />
+          {/* Smile */}
+          <path 
+            d="M18 32s2 3 6 3 6-3 6-3" 
+            stroke="white" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            fill="none"
+          />
+        </svg>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Analytics />
@@ -55,15 +91,7 @@ const Layout = ({ children }: LayoutProps) => {
           className="fixed bottom-6 right-6 z-40 bg-bengals-orange text-white p-3 rounded-full shadow-lg hover:bg-orange-500 transition-colors animate-pulse"
           aria-label="Open chat assistant"
         >
-          <div className="w-6 h-6 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="w-6 h-6 text-white">
-              <circle cx="12" cy="12" r="10" fill="currentColor"/>
-              <circle cx="9" cy="9" r="1.5" fill="white"/>
-              <circle cx="15" cy="9" r="1.5" fill="white"/>
-              <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-              <path d="M12 2C8 2 6 4 6 6v2c0 1 1 2 2 2h8c1 0 2-1 2-2V6c0-2-2-4-6-4z" fill="#FFB000"/>
-            </svg>
-          </div>
+          {getDIYGuyFloatingButton()}
         </button>
       )}
     </div>

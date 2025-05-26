@@ -20,6 +20,8 @@ import ChatPage from "./pages/ChatPage";
 import StorePage from "./pages/StorePage";
 import ContractorsPage from "./pages/ContractorsPage";
 import AdminPage from "./pages/AdminPage";
+import ToolsPage from "./pages/ToolsPage";
+import CostSavingBlogPage from "./pages/CostSavingBlogPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,10 +41,12 @@ const App = () => (
               <Route path="/subscription" element={<Layout><ProtectedRoute><SubscriptionPage /></ProtectedRoute></Layout>} />
               <Route path="/pricing" element={<Layout><PricingPage /></Layout>} />
               <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
+              <Route path="/blog/cost-saving" element={<Layout><CostSavingBlogPage /></Layout>} />
               <Route path="/community" element={<Layout><CommunityPage /></Layout>} />
               <Route path="/create-project" element={<Layout><ProtectedRoute><CreateProjectPage /></ProtectedRoute></Layout>} />
               <Route path="/contractors" element={<Layout><ContractorsPage /></Layout>} />
               <Route path="/store" element={<Layout><StorePage /></Layout>} />
+              <Route path="/tools" element={<Layout><ToolsPage /></Layout>} />
               <Route path="/chat" element={<Layout><ProtectedRoute><ChatPage /></ProtectedRoute></Layout>} />
               <Route path="/admin" element={<Layout><ProtectedRoute><AdminPage /></ProtectedRoute></Layout>} />
               <Route path="*" element={<Layout><NotFound /></Layout>} />

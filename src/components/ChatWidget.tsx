@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { X, Send } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -132,16 +133,55 @@ const ChatWidget = ({ show, setShow }: ChatWidgetProps) => {
 
   if (!show) return null;
 
+  const getDIYGuyAvatar = () => {
+    return (
+      <div className="h-12 w-12 bg-white rounded-full overflow-hidden border-2 border-white flex items-center justify-center relative shadow-sm">
+        <svg 
+          viewBox="0 0 48 48" 
+          className="w-10 h-10"
+          style={{ display: 'block' }}
+        >
+          {/* Hard hat */}
+          <path 
+            d="M12 18c0-8 6-12 12-12s12 4 12 12v4c0 2-2 4-4 4H16c-2 0-4-2-4-4v-4z" 
+            fill="#FFB000" 
+            stroke="#E69500" 
+            strokeWidth="1"
+          />
+          {/* Face */}
+          <circle cx="24" cy="30" r="12" fill="#FDBCB4" />
+          {/* Eyes */}
+          <circle cx="20" cy="27" r="2" fill="#2D3748" />
+          <circle cx="28" cy="27" r="2" fill="#2D3748" />
+          {/* Eye shine */}
+          <circle cx="20.5" cy="26.5" r="0.5" fill="white" />
+          <circle cx="28.5" cy="26.5" r="0.5" fill="white" />
+          {/* Smile */}
+          <path 
+            d="M18 32s2 3 6 3 6-3 6-3" 
+            stroke="#2D3748" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            fill="none"
+          />
+          {/* Tool belt accent */}
+          <rect x="16" y="40" width="16" height="3" fill="#8B4513" rx="1" />
+        </svg>
+        <div className="absolute -bottom-1 -right-1 bg-green-400 w-4 h-4 rounded-full border-2 border-white"></div>
+      </div>
+    );
+  };
+
   const getMascotDisplay = () => {
-    const baseStyle = "h-12 w-12 bg-white rounded-full overflow-hidden border-2 border-white flex items-center justify-center relative";
+    const baseAvatar = getDIYGuyAvatar();
     
     switch (mascotMood) {
       case 'thinking':
         return { 
           component: (
-            <div className={baseStyle}>
-              <div className="text-2xl">🤔</div>
-              <div className="absolute inset-0 bg-blue-500 opacity-20 rounded-full"></div>
+            <div className="relative">
+              {baseAvatar}
+              <div className="absolute -top-2 -right-2 text-sm">🤔</div>
             </div>
           ), 
           bgColor: 'bg-blue-500' 
@@ -149,9 +189,9 @@ const ChatWidget = ({ show, setShow }: ChatWidgetProps) => {
       case 'excited':
         return { 
           component: (
-            <div className={baseStyle}>
-              <div className="text-2xl animate-bounce">🔥</div>
-              <div className="absolute inset-0 bg-red-500 opacity-20 rounded-full"></div>
+            <div className="relative">
+              {baseAvatar}
+              <div className="absolute -top-2 -right-2 text-sm animate-bounce">🔥</div>
             </div>
           ), 
           bgColor: 'bg-red-500' 
@@ -159,28 +199,16 @@ const ChatWidget = ({ show, setShow }: ChatWidgetProps) => {
       case 'helpful':
         return { 
           component: (
-            <div className={baseStyle}>
-              <div className="text-2xl">🛠️</div>
-              <div className="absolute inset-0 bg-green-500 opacity-20 rounded-full"></div>
+            <div className="relative">
+              {baseAvatar}
+              <div className="absolute -top-2 -right-2 text-sm">🛠️</div>
             </div>
           ), 
           bgColor: 'bg-green-500' 
         };
       default:
         return { 
-          component: (
-            <div className={baseStyle}>
-              <div className="w-10 h-10 rounded-full bg-bengals-orange flex items-center justify-center">
-                <svg viewBox="0 0 24 24" className="w-6 h-6 text-white">
-                  <circle cx="12" cy="12" r="10" fill="currentColor"/>
-                  <circle cx="9" cy="9" r="1.5" fill="white"/>
-                  <circle cx="15" cy="9" r="1.5" fill="white"/>
-                  <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-                  <path d="M12 2C8 2 6 4 6 6v2c0 1 1 2 2 2h8c1 0 2-1 2-2V6c0-2-2-4-6-4z" fill="#FFB000"/>
-                </svg>
-              </div>
-            </div>
-          ), 
+          component: baseAvatar, 
           bgColor: 'bg-bengals-orange' 
         };
     }
@@ -194,7 +222,6 @@ const ChatWidget = ({ show, setShow }: ChatWidgetProps) => {
         <div className="flex items-center space-x-3">
           <div className="relative">
             {mascotDisplay.component}
-            <div className="absolute -bottom-1 -right-1 bg-green-400 w-4 h-4 rounded-full border-2 border-white"></div>
           </div>
           <div>
             <span className="font-bold text-sm">The DIY Guy</span>
