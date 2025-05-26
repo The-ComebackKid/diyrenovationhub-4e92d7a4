@@ -6,6 +6,9 @@ import ContractorListing from '@/features/contractors/components/ContractorListi
 import BecomeContractor from '@/features/contractors/components/BecomeContractor';
 import ContractorFaqs from '@/features/contractors/components/ContractorFaqs';
 import { Contractor } from '@/features/contractors/types';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Users, Search } from 'lucide-react';
 
 const ContractorsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -90,8 +93,50 @@ const ContractorsPage = () => {
           handleSearch={handleSearch}
         />
 
-        {/* Contractor Listings */}
-        <ContractorListing contractors={filteredContractors} />
+        {/* Show empty state when no contractors are available */}
+        {contractors.length === 0 ? (
+          <Card className="text-center py-12 mb-8">
+            <CardHeader>
+              <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+              <CardTitle className="text-2xl text-gray-600">No Contractors Available Yet</CardTitle>
+              <CardDescription className="text-lg">
+                We're building our network of trusted contractors. Be the first to join!
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => window.location.href = '/contractor-signup'}
+                className="bg-bengals-orange hover:bg-orange-500"
+              >
+                Become a Contractor
+              </Button>
+            </CardContent>
+          </Card>
+        ) : filteredContractors.length === 0 ? (
+          <Card className="text-center py-12 mb-8">
+            <CardHeader>
+              <Search className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+              <CardTitle className="text-2xl text-gray-600">No Results Found</CardTitle>
+              <CardDescription className="text-lg">
+                Try adjusting your search criteria or browse all contractors
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedSpecialty("all");
+                }}
+                variant="outline"
+              >
+                Clear Filters
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          /* Contractor Listings */
+          <ContractorListing contractors={filteredContractors} />
+        )}
 
         {/* Become a contractor section */}
         <BecomeContractor />

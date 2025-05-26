@@ -19,6 +19,7 @@ import CreateProjectPage from "./pages/CreateProjectPage";
 import ChatPage from "./pages/ChatPage";
 import StorePage from "./pages/StorePage";
 import ContractorsPage from "./pages/ContractorsPage";
+import ContractorSignupPage from "./pages/ContractorSignupPage";
 import AdminPage from "./pages/AdminPage";
 import ToolsPage from "./pages/ToolsPage";
 import CostSavingBlogPage from "./pages/CostSavingBlogPage";
@@ -45,6 +46,7 @@ const App = () => (
               <Route path="/community" element={<Layout><CommunityPage /></Layout>} />
               <Route path="/create-project" element={<Layout><ProtectedRoute><CreateProjectPage /></ProtectedRoute></Layout>} />
               <Route path="/contractors" element={<Layout><ContractorsPage /></Layout>} />
+              <Route path="/contractor-signup" element={<Layout><ContractorSignupPage /></Layout>} />
               <Route path="/store" element={<Layout><StorePage /></Layout>} />
               <Route path="/tools" element={<Layout><ToolsPage /></Layout>} />
               <Route path="/chat" element={<Layout><ProtectedRoute><ChatPage /></ProtectedRoute></Layout>} />
