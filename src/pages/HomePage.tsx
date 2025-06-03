@@ -6,6 +6,7 @@ import PricingSection from '@/components/PricingSection';
 import SEO from '@/components/SEO';
 import Newsletter from '@/components/Newsletter';
 import BlogPreview from '@/components/BlogPreview';
+import VideoSection from '@/components/VideoSection';
 import ContactForm from '@/components/ContactForm';
 import SocialShare from '@/components/SocialShare';
 
@@ -119,7 +120,7 @@ const HomePage = () => {
             
             <div className="p-6 border rounded-lg hover:shadow-md transition-shadow">
               <div className="w-12 h-12 rounded-full bg-bengals-orange/10 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 1 0 7.75"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
               </div>
               <h3 className="text-xl font-semibold mb-2">DIY Community</h3>
               <p className="text-gray-600 mb-4">Join thousands of DIY enthusiasts sharing tips, project photos, and support</p>
@@ -174,6 +175,9 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {/* Video Tutorials Section */}
+      <VideoSection />
 
       {/* Blog Preview Section */}
       <BlogPreview />
