@@ -10,8 +10,14 @@ import HeroSection from '@/components/sections/HeroSection';
 import FeaturesSection from '@/components/sections/FeaturesSection';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import CTASection from '@/components/sections/CTASection';
+import AffiliateLinks from '@/features/affiliate/components/AffiliateLinks';
+import SeasonalContent from '@/features/seasonal/components/SeasonalContent';
+import AchievementSystem from '@/features/achievements/components/AchievementSystem';
+import { useAuth } from '@/hooks/useAuth';
 
 const HomePage = () => {
+  const { user } = useAuth();
+
   return (
     <div>
       <SEO />
@@ -22,11 +28,34 @@ const HomePage = () => {
       {/* Features Section */}
       <FeaturesSection />
 
+      {/* Seasonal Content - High visibility for engagement */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <SeasonalContent />
+        </div>
+      </section>
+
       {/* Video Tutorials Section */}
       <VideoSection />
 
+      {/* Affiliate Products - Revenue generation */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <AffiliateLinks title="Essential Tools for Your Next Project" maxItems={6} />
+        </div>
+      </section>
+
       {/* Blog Preview Section */}
       <BlogPreview />
+
+      {/* Achievement System - Only show for logged in users */}
+      {user && (
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <AchievementSystem />
+          </div>
+        </section>
+      )}
 
       {/* Testimonials Section */}
       <TestimonialsSection />
