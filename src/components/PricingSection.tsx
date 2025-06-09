@@ -22,9 +22,9 @@ const PricingSection = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {subscriptionPlans.map((plan, index) => (
-            <Card key={plan.id} className={`relative ${index === 1 ? 'border-bengals-orange shadow-lg scale-105' : ''}`}>
+            <Card key={plan.id} className={`relative ${index === 1 ? 'border-bengals-orange shadow-lg md:scale-105' : ''}`}>
               {index === 1 && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                   <Badge className="bg-bengals-orange text-white px-4 py-1">
@@ -34,26 +34,26 @@ const PricingSection = () => {
                 </div>
               )}
               
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="text-xl font-bold">{plan.name}</CardTitle>
+              <CardHeader className="text-center pb-6">
+                <CardTitle className="text-lg font-bold">{plan.name}</CardTitle>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold">${plan.price}</span>
+                  <span className="text-3xl font-bold">${plan.price}</span>
                   <span className="text-gray-500">/{plan.interval}</span>
                 </div>
               </CardHeader>
               
-              <CardContent className="space-y-6">
-                <ul className="space-y-3">
+              <CardContent className="space-y-4">
+                <ul className="space-y-2">
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start">
-                      <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm">{feature}</span>
+                      <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
+                      <span className="text-xs">{feature}</span>
                     </li>
                   ))}
                 </ul>
                 
                 <Button 
-                  className={`w-full ${index === 1 ? 'bg-bengals-orange hover:bg-orange-500' : ''}`}
+                  className={`w-full text-sm ${index === 1 ? 'bg-bengals-orange hover:bg-orange-500' : ''}`}
                   variant={index === 1 ? 'default' : 'outline'}
                   disabled={loading}
                   onClick={() => handleSubscribe(plan.stripePriceId)}
