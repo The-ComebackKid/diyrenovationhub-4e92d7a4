@@ -18,7 +18,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'DIY Enthusiast',
     price: 9.99,
     interval: 'month',
-    stripePriceId: 'price_1QR7H8K34dlmm4voTest0001', // Updated test price ID
+    stripePriceId: 'price_1RYDv0K34dlmm4voIumxSjp0',
     features: [
       'Unlimited chat with DIY Guy',
       'Basic project guides',
@@ -31,7 +31,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'Renovation Pro',
     price: 19.99,
     interval: 'month',
-    stripePriceId: 'price_1QR7H8K34dlmm4voTest0002', // Updated test price ID
+    stripePriceId: 'price_1RYDvlK34dlmm4vo0xVjoNwd',
     features: [
       'Everything in DIY Enthusiast',
       'Photo analysis & consultation',
@@ -45,7 +45,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'Master Builder',
     price: 39.99,
     interval: 'month',
-    stripePriceId: 'price_1QR7H8K34dlmm4voTest0003', // Updated test price ID
+    stripePriceId: 'price_1RYDwYK34dlmm4vowh1xD9A4',
     features: [
       'Everything in Renovation Pro',
       '24/7 emergency support',
@@ -59,7 +59,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'Professional Contractor',
     price: 49.99,
     interval: 'month',
-    stripePriceId: 'price_1QR7H8K34dlmm4voTest0004', // Updated test price ID
+    stripePriceId: 'price_1RYDxEK34dlmm4vomxDK4EcF',
     features: [
       'Everything in Master Builder',
       'Contractor dashboard access',
