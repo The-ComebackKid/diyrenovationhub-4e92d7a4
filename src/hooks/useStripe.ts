@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -17,7 +18,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'DIY Enthusiast',
     price: 9.99,
     interval: 'month',
-    stripePriceId: 'price_REPLACE_WITH_YOUR_BASIC_PRICE_ID',
+    stripePriceId: 'price_1RYDv0K34dlmm4voIumxSjp0',
     features: [
       'Unlimited chat with DIY Guy',
       'Basic project guides',
@@ -30,7 +31,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'Renovation Pro',
     price: 19.99,
     interval: 'month',
-    stripePriceId: 'price_REPLACE_WITH_YOUR_PREMIUM_PRICE_ID',
+    stripePriceId: 'price_1RYDvlK34dlmm4vo0xVjoNwd',
     features: [
       'Everything in DIY Enthusiast',
       'Photo analysis & consultation',
@@ -44,7 +45,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'Master Builder',
     price: 39.99,
     interval: 'month',
-    stripePriceId: 'price_REPLACE_WITH_YOUR_EXPERT_PRICE_ID',
+    stripePriceId: 'price_1RYDwYK34dlmm4vowh1xD9A4',
     features: [
       'Everything in Renovation Pro',
       '24/7 emergency support',
