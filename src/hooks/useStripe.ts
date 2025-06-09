@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface SubscriptionPlan {
   id: string;
@@ -17,7 +18,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'DIY Enthusiast',
     price: 9.99,
     interval: 'month',
-    stripePriceId: 'price_basic_monthly',
+    stripePriceId: 'price_1QOwlQK34dlmm4voZNHs8UEm',
     features: [
       'Unlimited chat with DIY Guy',
       'Basic project guides',
@@ -30,7 +31,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'Renovation Pro',
     price: 19.99,
     interval: 'month',
-    stripePriceId: 'price_premium_monthly',
+    stripePriceId: 'price_1QOwmOK34dlmm4voZNHs8UEm',
     features: [
       'Everything in DIY Enthusiast',
       'Photo analysis & consultation',
@@ -44,7 +45,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'Master Builder',
     price: 39.99,
     interval: 'month',
-    stripePriceId: 'price_expert_monthly',
+    stripePriceId: 'price_1QOwnMK34dlmm4voZNHs8UEm',
     features: [
       'Everything in Renovation Pro',
       '24/7 emergency support',
@@ -62,28 +63,22 @@ export const useStripe = () => {
   const createCheckoutSession = async (priceId: string) => {
     setLoading(true);
     try {
-      // In a real app, this would call your backend API
-      // For now, we'll simulate the process
       console.log('Creating checkout session for:', priceId);
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toast({
-        title: "Redirecting to Stripe...",
-        description: "Setting up your secure payment portal",
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { priceId }
       });
-      
-      // In production, redirect to actual Stripe checkout
-      // window.location.href = checkoutUrl;
-      
-      // For demo purposes, show success message
-      setTimeout(() => {
-        toast({
-          title: "Payment Demo",
-          description: "In production, this would redirect to Stripe checkout!",
-        });
-      }, 2000);
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.url) {
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL received');
+      }
       
     } catch (error) {
       console.error('Stripe error:', error);
@@ -100,15 +95,20 @@ export const useStripe = () => {
   const createPortalSession = async () => {
     setLoading(true);
     try {
-      // Simulate customer portal access
       console.log('Creating customer portal session');
       
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast({
-        title: "Customer Portal",
-        description: "In production, this would open your Stripe customer portal!",
-      });
+      const { data, error } = await supabase.functions.invoke('customer-portal');
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.url) {
+        // Redirect to Stripe customer portal
+        window.location.href = data.url;
+      } else {
+        throw new Error('No portal URL received');
+      }
       
     } catch (error) {
       console.error('Portal error:', error);
