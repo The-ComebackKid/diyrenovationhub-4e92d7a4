@@ -17,7 +17,7 @@ interface AffiliateProduct {
 }
 
 interface AffiliateLinksProps {
-  products: AffiliateProduct[];
+  products?: AffiliateProduct[];
   title?: string;
   maxItems?: number;
 }
