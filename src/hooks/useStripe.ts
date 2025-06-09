@@ -18,7 +18,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'DIY Enthusiast',
     price: 9.99,
     interval: 'month',
-    stripePriceId: 'price_1RYDv0K34dlmm4voIumxSjp0',
+    stripePriceId: 'price_1QR7H8K34dlmm4voTest0001', // Updated test price ID
     features: [
       'Unlimited chat with DIY Guy',
       'Basic project guides',
@@ -31,7 +31,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'Renovation Pro',
     price: 19.99,
     interval: 'month',
-    stripePriceId: 'price_1RYDvlK34dlmm4vo0xVjoNwd',
+    stripePriceId: 'price_1QR7H8K34dlmm4voTest0002', // Updated test price ID
     features: [
       'Everything in DIY Enthusiast',
       'Photo analysis & consultation',
@@ -45,7 +45,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'Master Builder',
     price: 39.99,
     interval: 'month',
-    stripePriceId: 'price_1RYDwYK34dlmm4vowh1xD9A4',
+    stripePriceId: 'price_1QR7H8K34dlmm4voTest0003', // Updated test price ID
     features: [
       'Everything in Renovation Pro',
       '24/7 emergency support',
@@ -59,7 +59,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: 'Professional Contractor',
     price: 49.99,
     interval: 'month',
-    stripePriceId: 'price_1RYDxEK34dlmm4vomxDK4EcF',
+    stripePriceId: 'price_1QR7H8K34dlmm4voTest0004', // Updated test price ID
     features: [
       'Everything in Master Builder',
       'Contractor dashboard access',
@@ -80,28 +80,33 @@ export const useStripe = () => {
   const createCheckoutSession = async (priceId: string) => {
     setLoading(true);
     try {
-      console.log('Creating checkout session for:', priceId);
+      console.log('Creating checkout session for price ID:', priceId);
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { priceId }
       });
 
+      console.log('Response from create-checkout:', { data, error });
+
       if (error) {
+        console.error('Supabase function error:', error);
         throw error;
       }
 
       if (data?.url) {
-        // Redirect to Stripe checkout
-        window.location.href = data.url;
+        console.log('Redirecting to Stripe checkout:', data.url);
+        // Open Stripe checkout in a new tab
+        window.open(data.url, '_blank');
       } else {
-        throw new Error('No checkout URL received');
+        console.error('No checkout URL received:', data);
+        throw new Error('No checkout URL received from server');
       }
       
     } catch (error) {
-      console.error('Stripe error:', error);
+      console.error('Stripe checkout error:', error);
       toast({
         title: "Payment Error",
-        description: "Something went wrong. Please try again.",
+        description: error.message || "Something went wrong. Please try again.",
         variant: "destructive",
       });
     } finally {
