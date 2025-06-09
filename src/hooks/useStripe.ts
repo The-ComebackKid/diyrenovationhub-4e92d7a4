@@ -53,6 +53,23 @@ export const subscriptionPlans: SubscriptionPlan[] = [
       'Custom project blueprints',
       'Exclusive masterclasses'
     ]
+  },
+  {
+    id: 'contractor',
+    name: 'Professional Contractor',
+    price: 49.99,
+    interval: 'month',
+    stripePriceId: 'price_1RYDxEK34dlmm4vomxDK4EcF',
+    features: [
+      'Everything in Master Builder',
+      'Contractor dashboard access',
+      'Lead generation tools',
+      'Customer management system',
+      'Project bidding assistance',
+      'Business analytics & reporting',
+      'White-label client portal',
+      'Priority contractor support'
+    ]
   }
 ];
 
