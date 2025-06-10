@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Star } from "lucide-react";
@@ -107,7 +108,7 @@ const PricingSection = () => {
               </CardHeader>
               
               <CardContent className="space-y-4">
-                <ul className="space-y-2">
+                <ul className="space-y-2 mb-6">
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start">
                       <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0 mt-0.5" />

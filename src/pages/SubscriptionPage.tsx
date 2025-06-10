@@ -1,11 +1,9 @@
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Zap, Star } from 'lucide-react';
-import { toast } from "sonner";
 
 interface PricingTier {
   id: string;
@@ -16,25 +14,10 @@ interface PricingTier {
   features: string[];
   popular?: boolean;
   icon: any;
-  buyButtonId?: string;
+  buyButtonId: string;
 }
 
 const pricingTiers: PricingTier[] = [
-  {
-    id: 'free',
-    name: 'Free',
-    price: 0,
-    interval: 'month',
-    description: 'Perfect for getting started with DIY projects',
-    features: [
-      'Basic project guides',
-      'Community access',
-      'Basic contractor search',
-      '5 AI chat messages per month',
-      'Basic project calculator'
-    ],
-    icon: Star
-  },
   {
     id: 'basic',
     name: 'DIY Enthusiast',
@@ -66,12 +49,27 @@ const pricingTiers: PricingTier[] = [
     ],
     icon: Crown,
     buyButtonId: 'buy_btn_1RYPFRK34dlmm4voEtzCv8Zq'
+  },
+  {
+    id: 'expert',
+    name: 'Master Builder',
+    price: 39.99,
+    interval: 'month',
+    description: 'Complete professional solution',
+    features: [
+      'Everything in Renovation Pro',
+      '24/7 emergency support',
+      'One-on-one video consultations',
+      'Custom project blueprints',
+      'Exclusive masterclasses'
+    ],
+    icon: Star,
+    buyButtonId: 'buy_btn_1RYPHEK34dlmm4voaQZDXpLX'
   }
 ];
 
 const SubscriptionPage = () => {
   const { user } = useAuth();
-  const [currentTier] = useState('free');
 
   // Load Stripe buy button script
   useEffect(() => {
@@ -86,14 +84,6 @@ const SubscriptionPage = () => {
       }
     };
   }, []);
-
-  const handleFreeSubscribe = () => {
-    if (!user) {
-      toast.error('Please sign in to use the free plan');
-      return;
-    }
-    toast.info('You are already on the free plan');
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -110,14 +100,13 @@ const SubscriptionPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {pricingTiers.map((tier) => {
             const Icon = tier.icon;
-            const isCurrentPlan = currentTier === tier.id;
             
             return (
               <Card 
                 key={tier.id} 
                 className={`relative overflow-hidden ${
                   tier.popular ? 'ring-2 ring-bengals-orange scale-105' : ''
-                } ${isCurrentPlan ? 'bg-gray-50' : ''}`}
+                }`}
               >
                 {tier.popular && (
                   <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
@@ -138,9 +127,7 @@ const SubscriptionPage = () => {
                     <span className="text-4xl font-bold">
                       ${tier.price}
                     </span>
-                    {tier.price > 0 && (
-                      <span className="text-gray-500">/{tier.interval}</span>
-                    )}
+                    <span className="text-gray-500">/{tier.interval}</span>
                   </div>
                   <CardDescription className="mt-2">
                     {tier.description}
@@ -157,23 +144,12 @@ const SubscriptionPage = () => {
                     ))}
                   </ul>
                   
-                  {tier.buyButtonId ? (
-                    <div className="w-full">
-                      <stripe-buy-button
-                        buy-button-id={tier.buyButtonId}
-                        publishable-key="pk_live_51RY0n6K34dlmm4voC0vvY3RtYYlgsnHTEFPQgidUuraMnaCnb9xYZ6wjGhu08mKMen7SajXI01wnQSNdad0rDD2E00sbYHuwgn"
-                      />
-                    </div>
-                  ) : (
-                    <Button 
-                      className="w-full"
-                      variant="outline"
-                      onClick={handleFreeSubscribe}
-                      disabled={isCurrentPlan}
-                    >
-                      {isCurrentPlan ? 'Current Plan' : `Get ${tier.name}`}
-                    </Button>
-                  )}
+                  <div className="w-full">
+                    <stripe-buy-button
+                      buy-button-id={tier.buyButtonId}
+                      publishable-key="pk_live_51RY0n6K34dlmm4voC0vvY3RtYYlgsnHTEFPQgidUuraMnaCnb9xYZ6wjGhu08mKMen7SajXI01wnQSNdad0rDD2E00sbYHuwgn"
+                    />
+                  </div>
                 </CardContent>
               </Card>
             );
