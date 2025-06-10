@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Star } from "lucide-react";
@@ -25,7 +24,7 @@ const PricingSection = () => {
       id: 'basic',
       name: 'DIY Enthusiast',
       price: 9.99,
-      buyButtonId: 'buy_btn_1RYPHEK34dlmm4voaQZDXpLX',
+      buyButtonId: 'buy_btn_1RYP5YK34dlmm4voyQi9uiAH',
       features: [
         'Unlimited chat with DIY Guy',
         'Basic project guides',
