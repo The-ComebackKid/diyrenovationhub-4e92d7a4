@@ -1,12 +1,11 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Zap, Star } from 'lucide-react';
 import { toast } from "sonner";
-import { useEffect } from 'react';
 
 interface PricingTier {
   id: string;
@@ -72,7 +71,6 @@ const pricingTiers: PricingTier[] = [
 
 const SubscriptionPage = () => {
   const { user } = useAuth();
-  const [selectedInterval, setSelectedInterval] = useState<'month' | 'year'>('month');
   const [currentTier] = useState('free');
 
   // Load Stripe buy button script
@@ -89,22 +87,12 @@ const SubscriptionPage = () => {
     };
   }, []);
 
-  const handleSubscribe = async (tierId: string) => {
+  const handleFreeSubscribe = () => {
     if (!user) {
-      toast.error('Please sign in to subscribe');
+      toast.error('Please sign in to use the free plan');
       return;
     }
-
-    if (tierId === 'free') {
-      toast.info('You are already on the free plan');
-      return;
-    }
-
-    toast.success(`Click the "Subscribe" button below to continue with ${tierId} plan`);
-  };
-
-  const getDiscountedPrice = (price: number) => {
-    return selectedInterval === 'year' ? Math.round(price * 0.8) : price;
+    toast.info('You are already on the free plan');
   };
 
   return (
@@ -117,31 +105,12 @@ const SubscriptionPage = () => {
           <p className="text-xl text-gray-600 mb-8">
             Unlock the full potential of your DIY projects
           </p>
-          
-          <div className="flex items-center justify-center space-x-4 mb-8">
-            <Button
-              variant={selectedInterval === 'month' ? 'default' : 'outline'}
-              onClick={() => setSelectedInterval('month')}
-              className={selectedInterval === 'month' ? 'bg-bengals-orange hover:bg-orange-500' : ''}
-            >
-              Monthly
-            </Button>
-            <Button
-              variant={selectedInterval === 'year' ? 'default' : 'outline'}
-              onClick={() => setSelectedInterval('year')}
-              className={selectedInterval === 'year' ? 'bg-bengals-orange hover:bg-orange-500' : ''}
-            >
-              Yearly
-              <Badge className="ml-2 bg-green-100 text-green-800">Save 20%</Badge>
-            </Button>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {pricingTiers.map((tier) => {
             const Icon = tier.icon;
             const isCurrentPlan = currentTier === tier.id;
-            const discountedPrice = getDiscountedPrice(tier.price);
             
             return (
               <Card 
@@ -167,17 +136,10 @@ const SubscriptionPage = () => {
                   <CardTitle className="text-2xl">{tier.name}</CardTitle>
                   <div className="mt-4">
                     <span className="text-4xl font-bold">
-                      ${discountedPrice}
+                      ${tier.price}
                     </span>
                     {tier.price > 0 && (
-                      <>
-                        <span className="text-gray-500">/{tier.interval}</span>
-                        {selectedInterval === 'year' && tier.price > 0 && (
-                          <div className="text-sm text-gray-500 line-through">
-                            ${tier.price}/{tier.interval}
-                          </div>
-                        )}
-                      </>
+                      <span className="text-gray-500">/{tier.interval}</span>
                     )}
                   </div>
                   <CardDescription className="mt-2">
@@ -206,7 +168,7 @@ const SubscriptionPage = () => {
                     <Button 
                       className="w-full"
                       variant="outline"
-                      onClick={() => handleSubscribe(tier.id)}
+                      onClick={handleFreeSubscribe}
                       disabled={isCurrentPlan}
                     >
                       {isCurrentPlan ? 'Current Plan' : `Get ${tier.name}`}
