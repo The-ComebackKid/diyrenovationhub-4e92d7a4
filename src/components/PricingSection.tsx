@@ -1,16 +1,81 @@
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Star } from "lucide-react";
-import { useStripe } from "@/hooks/useStripe";
+import { useEffect } from "react";
 
 const PricingSection = () => {
-  const { createCheckoutSession, loading, subscriptionPlans } = useStripe();
+  // Load Stripe buy button script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://js.stripe.com/v3/buy-button.js';
+    script.async = true;
+    document.head.appendChild(script);
 
-  const handleSubscribe = async (priceId: string) => {
-    await createCheckoutSession(priceId);
-  };
+    return () => {
+      // Cleanup script on unmount
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    };
+  }, []);
+
+  const plans = [
+    {
+      id: 'basic',
+      name: 'DIY Enthusiast',
+      price: 9.99,
+      buyButtonId: 'buy_btn_1RYPHEK34dlmm4voaQZDXpLX',
+      features: [
+        'Unlimited chat with DIY Guy',
+        'Basic project guides',
+        'Community access',
+        'Material calculators'
+      ]
+    },
+    {
+      id: 'premium',
+      name: 'Renovation Pro',
+      price: 19.99,
+      buyButtonId: 'buy_btn_1RYPFRK34dlmm4voEtzCv8Zq',
+      features: [
+        'Everything in DIY Enthusiast',
+        'Photo analysis & consultation',
+        'Priority expert support',
+        'Advanced project planning',
+        'Contractor recommendations'
+      ]
+    },
+    {
+      id: 'expert',
+      name: 'Master Builder',
+      price: 39.99,
+      buyButtonId: 'buy_btn_1RYPHEK34dlmm4voaQZDXpLX',
+      features: [
+        'Everything in Renovation Pro',
+        '24/7 emergency support',
+        'One-on-one video consultations',
+        'Custom project blueprints',
+        'Exclusive masterclasses'
+      ]
+    },
+    {
+      id: 'contractor',
+      name: 'Professional Contractor',
+      price: 49.99,
+      buyButtonId: 'buy_btn_1RYEwqK34dlmm4vob4rGvbYu',
+      features: [
+        'Everything in Master Builder',
+        'Contractor dashboard access',
+        'Lead generation tools',
+        'Customer management system',
+        'Project bidding assistance',
+        'Business analytics & reporting',
+        'White-label client portal',
+        'Priority contractor support'
+      ]
+    }
+  ];
 
   return (
     <section className="py-16 bg-white">
@@ -23,7 +88,7 @@ const PricingSection = () => {
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {subscriptionPlans.map((plan, index) => (
+          {plans.map((plan, index) => (
             <Card key={plan.id} className={`relative ${index === 1 ? 'border-bengals-orange shadow-lg md:scale-105' : ''}`}>
               {index === 1 && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -38,7 +103,7 @@ const PricingSection = () => {
                 <CardTitle className="text-lg font-bold">{plan.name}</CardTitle>
                 <div className="mt-4">
                   <span className="text-3xl font-bold">${plan.price}</span>
-                  <span className="text-gray-500">/{plan.interval}</span>
+                  <span className="text-gray-500">/month</span>
                 </div>
               </CardHeader>
               
@@ -52,14 +117,12 @@ const PricingSection = () => {
                   ))}
                 </ul>
                 
-                <Button 
-                  className={`w-full text-sm ${index === 1 ? 'bg-bengals-orange hover:bg-orange-500' : ''}`}
-                  variant={index === 1 ? 'default' : 'outline'}
-                  disabled={loading}
-                  onClick={() => handleSubscribe(plan.stripePriceId)}
-                >
-                  {loading ? 'Processing...' : `Start ${plan.name}`}
-                </Button>
+                <div className="w-full">
+                  <stripe-buy-button
+                    buy-button-id={plan.buyButtonId}
+                    publishable-key="pk_live_51RY0n6K34dlmm4voC0vvY3RtYYlgsnHTEFPQgidUuraMnaCnb9xYZ6wjGhu08mKMen7SajXI01wnQSNdad0rDD2E00sbYHuwgn"
+                  />
+                </div>
                 
                 <p className="text-xs text-gray-500 text-center">
                   Cancel anytime • 30-day money-back guarantee
@@ -73,7 +136,6 @@ const PricingSection = () => {
           <p className="text-gray-600 mb-4">
             Need something custom? Enterprise solutions available.
           </p>
-          <Button variant="outline">Contact Sales</Button>
         </div>
       </div>
     </section>
