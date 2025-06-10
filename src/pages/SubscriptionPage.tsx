@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Zap, Star } from 'lucide-react';
 import { toast } from "sonner";
+import { useEffect } from 'react';
 
 interface PricingTier {
   id: string;
@@ -16,6 +17,7 @@ interface PricingTier {
   features: string[];
   popular?: boolean;
   icon: any;
+  buyButtonId?: string;
 }
 
 const pricingTiers: PricingTier[] = [
@@ -35,47 +37,57 @@ const pricingTiers: PricingTier[] = [
     icon: Star
   },
   {
-    id: 'pro',
-    name: 'Pro',
-    price: 19,
+    id: 'basic',
+    name: 'DIY Enthusiast',
+    price: 9.99,
     interval: 'month',
     description: 'Ideal for serious DIY enthusiasts',
     features: [
-      'All Free features',
-      'Unlimited AI chat assistance',
-      'Advanced project guides',
-      'Priority contractor matching',
-      'Advanced project calculator',
-      'Progress tracking',
-      'Email support'
+      'Unlimited chat with DIY Guy',
+      'Basic project guides',
+      'Community access',
+      'Material calculators'
     ],
     popular: true,
-    icon: Zap
+    icon: Zap,
+    buyButtonId: 'buy_btn_1RYP5YK34dlmm4voyQi9uiAH'
   },
   {
-    id: 'expert',
-    name: 'Expert',
-    price: 39,
+    id: 'premium',
+    name: 'Renovation Pro',
+    price: 19.99,
     interval: 'month',
     description: 'For professionals and power users',
     features: [
-      'All Pro features',
-      'Phone support',
-      'Custom project planning',
-      'Bulk contractor quotes',
-      'Advanced analytics',
-      'API access',
-      'White-label options',
-      '1-on-1 expert consultations'
+      'Everything in DIY Enthusiast',
+      'Photo analysis & consultation',
+      'Priority expert support',
+      'Advanced project planning',
+      'Contractor recommendations'
     ],
-    icon: Crown
+    icon: Crown,
+    buyButtonId: 'buy_btn_1RYPFRK34dlmm4voEtzCv8Zq'
   }
 ];
 
 const SubscriptionPage = () => {
   const { user } = useAuth();
   const [selectedInterval, setSelectedInterval] = useState<'month' | 'year'>('month');
-  const [currentTier] = useState('free'); // This would come from user's subscription data
+  const [currentTier] = useState('free');
+
+  // Load Stripe buy button script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://js.stripe.com/v3/buy-button.js';
+    script.async = true;
+    document.head.appendChild(script);
+
+    return () => {
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    };
+  }, []);
 
   const handleSubscribe = async (tierId: string) => {
     if (!user) {
@@ -88,8 +100,7 @@ const SubscriptionPage = () => {
       return;
     }
 
-    toast.success(`Redirecting to checkout for ${tierId} plan...`);
-    // Here you would integrate with Stripe or your payment processor
+    toast.success(`Click the "Subscribe" button below to continue with ${tierId} plan`);
   };
 
   const getDiscountedPrice = (price: number) => {
@@ -184,18 +195,23 @@ const SubscriptionPage = () => {
                     ))}
                   </ul>
                   
-                  <Button 
-                    className={`w-full ${
-                      tier.popular 
-                        ? 'bg-bengals-orange hover:bg-orange-500' 
-                        : ''
-                    }`}
-                    variant={tier.popular ? 'default' : 'outline'}
-                    onClick={() => handleSubscribe(tier.id)}
-                    disabled={isCurrentPlan}
-                  >
-                    {isCurrentPlan ? 'Current Plan' : `Get ${tier.name}`}
-                  </Button>
+                  {tier.buyButtonId ? (
+                    <div className="w-full">
+                      <stripe-buy-button
+                        buy-button-id={tier.buyButtonId}
+                        publishable-key="pk_live_51RY0n6K34dlmm4voC0vvY3RtYYlgsnHTEFPQgidUuraMnaCnb9xYZ6wjGhu08mKMen7SajXI01wnQSNdad0rDD2E00sbYHuwgn"
+                      />
+                    </div>
+                  ) : (
+                    <Button 
+                      className="w-full"
+                      variant="outline"
+                      onClick={() => handleSubscribe(tier.id)}
+                      disabled={isCurrentPlan}
+                    >
+                      {isCurrentPlan ? 'Current Plan' : `Get ${tier.name}`}
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             );
