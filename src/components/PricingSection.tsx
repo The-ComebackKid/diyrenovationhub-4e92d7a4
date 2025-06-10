@@ -99,23 +99,26 @@ const PricingSection = () => {
                 </div>
               )}
               
-              <CardHeader className="text-center pb-6">
+              <CardHeader className="text-center pb-4">
                 <CardTitle className="text-lg font-bold">{plan.name}</CardTitle>
-                <div className="mt-4">
+                <div className="mt-2">
                   <span className="text-3xl font-bold">${plan.price}</span>
                   <span className="text-gray-500">/month</span>
                 </div>
               </CardHeader>
               
               <CardContent className="space-y-4">
-                <ul className="space-y-2 mb-6">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-start">
-                      <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                      <span className="text-xs">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="mb-6">
+                  <h4 className="font-semibold text-sm mb-3 text-gray-700">What's included:</h4>
+                  <ul className="space-y-2">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-start">
+                        <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
+                        <span className="text-xs text-gray-600">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 
                 <div className="w-full">
                   <stripe-buy-button

@@ -23,12 +23,14 @@ const pricingTiers: PricingTier[] = [
     name: 'DIY Enthusiast',
     price: 9.99,
     interval: 'month',
-    description: 'Ideal for serious DIY enthusiasts',
+    description: 'Perfect for weekend DIY projects',
     features: [
       'Unlimited chat with DIY Guy',
       'Basic project guides',
       'Community access',
-      'Material calculators'
+      'Material calculators',
+      'Project inspiration gallery',
+      'Basic troubleshooting support'
     ],
     popular: true,
     icon: Zap,
@@ -39,13 +41,16 @@ const pricingTiers: PricingTier[] = [
     name: 'Renovation Pro',
     price: 19.99,
     interval: 'month',
-    description: 'For professionals and power users',
+    description: 'For serious home improvers',
     features: [
       'Everything in DIY Enthusiast',
       'Photo analysis & consultation',
       'Priority expert support',
       'Advanced project planning',
-      'Contractor recommendations'
+      'Contractor recommendations',
+      'Cost estimation tools',
+      'Progress tracking features',
+      'Premium video tutorials'
     ],
     icon: Crown,
     buyButtonId: 'buy_btn_1RYPFRK34dlmm4voEtzCv8Zq'
@@ -61,7 +66,10 @@ const pricingTiers: PricingTier[] = [
       '24/7 emergency support',
       'One-on-one video consultations',
       'Custom project blueprints',
-      'Exclusive masterclasses'
+      'Exclusive masterclasses',
+      'Direct expert line',
+      'Advanced safety guidance',
+      'Commercial project support'
     ],
     icon: Star,
     buyButtonId: 'buy_btn_1RYPHEK34dlmm4voaQZDXpLX'
@@ -93,11 +101,11 @@ const SubscriptionPage = () => {
             Choose Your Plan
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            Unlock the full potential of your DIY projects
+            Unlock the full potential of your DIY projects with expert guidance
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {pricingTiers.map((tier) => {
             const Icon = tier.icon;
             
@@ -116,7 +124,7 @@ const SubscriptionPage = () => {
                   </div>
                 )}
                 
-                <CardHeader className="text-center pb-2">
+                <CardHeader className="text-center pb-4">
                   <div className="flex justify-center mb-4">
                     <div className="p-3 bg-bengals-orange/10 rounded-full">
                       <Icon className="h-8 w-8 text-bengals-orange" />
@@ -135,14 +143,17 @@ const SubscriptionPage = () => {
                 </CardHeader>
                 
                 <CardContent>
-                  <ul className="space-y-3 mb-6">
-                    {tier.features.map((feature, index) => (
-                      <li key={index} className="flex items-center">
-                        <Check className="h-4 w-4 text-green-500 mr-3 flex-shrink-0" />
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="mb-6">
+                    <h4 className="font-semibold mb-3">Everything you get:</h4>
+                    <ul className="space-y-3">
+                      {tier.features.map((feature, index) => (
+                        <li key={index} className="flex items-center">
+                          <Check className="h-4 w-4 text-green-500 mr-3 flex-shrink-0" />
+                          <span className="text-sm">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                   
                   <div className="w-full">
                     <stripe-buy-button
@@ -150,6 +161,10 @@ const SubscriptionPage = () => {
                       publishable-key="pk_live_51RY0n6K34dlmm4voC0vvY3RtYYlgsnHTEFPQgidUuraMnaCnb9xYZ6wjGhu08mKMen7SajXI01wnQSNdad0rDD2E00sbYHuwgn"
                     />
                   </div>
+                  
+                  <p className="text-xs text-gray-500 text-center mt-4">
+                    Cancel anytime • 30-day money-back guarantee
+                  </p>
                 </CardContent>
               </Card>
             );
@@ -173,6 +188,10 @@ const SubscriptionPage = () => {
               <div>
                 <h3 className="font-semibold mb-2">Is there a free trial?</h3>
                 <p className="text-gray-600">You can start with our free plan immediately. For paid plans, we offer a 7-day free trial so you can explore all premium features.</p>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">What's included in emergency support?</h3>
+                <p className="text-gray-600">Emergency support provides 24/7 access to our expert team for urgent DIY issues, safety concerns, and time-sensitive project guidance.</p>
               </div>
             </CardContent>
           </Card>
