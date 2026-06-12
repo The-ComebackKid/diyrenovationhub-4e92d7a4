@@ -573,34 +573,22 @@
     setTimeout(() => t.classList.remove('show'), 4000);
   }
 
-  // ── STRIPE CHECKOUT — Direct Stripe Hosted Pages ──
-  const STRIPE_CHECKOUT_URLS = {
-    masterclass: 'https://buy.stripe.com/fZedRh14s5BPf6o8ww?prefilled_promo_code=&client_reference_id=masterclass',
-    electrical:  'https://buy.stripe.com/fZedRh14s5BPf6o8ww?prefilled_promo_code=&client_reference_id=electrical',
-    plumbing:    'https://buy.stripe.com/fZedRh14s5BPf6o8ww?prefilled_promo_code=&client_reference_id=plumbing',
-    structural:  'https://buy.stripe.com/fZedRh14s5BPf6o8ww?prefilled_promo_code=&client_reference_id=structural',
-    tile:        'https://buy.stripe.com/fZedRh14s5BPf6o8ww?prefilled_promo_code=&client_reference_id=tile',
-    investor:    'https://buy.stripe.com/fZedRh14s5BPf6o8ww?prefilled_promo_code=&client_reference_id=investor'
-  };
-
-  // Direct Stripe hosted checkout — no server needed
-  const STRIPE_PRICES = {
-    masterclass: { price: 'price_1ThPvTRACCfzt8Fw44WKzptO', name: 'Complete Home Renovation Masterclass', amount: '$197' },
-    electrical:  { price: 'price_1ThPvWRACCfzt8FwhUSPTTsq', name: 'Residential Wiring Decoded', amount: '$97' },
-    plumbing:    { price: 'price_1ThPvaRACCfzt8Fw2k89d9iw', name: 'Rough-In to Finish Plumbing', amount: '$97' },
-    structural:  { price: 'price_1ThPvdRACCfzt8Fwn4SVYdFO', name: 'Structural & Framing Fundamentals', amount: '$97' },
-    tile:        { price: 'price_1ThPvgRACCfzt8FwehvI8f8a', name: 'Tile, Stone & Waterproofing', amount: '$97' },
-    investor:    { price: 'price_1ThPvjRACCfzt8Fwcp6nSY7P', name: 'Renovation for Real Estate Investors', amount: '$147' }
+  // ── STRIPE PAYMENT LINKS — Direct buy.stripe.com links ──
+  const PAYMENT_LINKS = {
+    masterclass: 'https://buy.stripe.com/00w5kFalQ8Vl4sp3Nn1sQ00',
+    electrical:  'https://buy.stripe.com/eVqeVf65Ab3tf730Bb1sQ01',
+    plumbing:    'https://buy.stripe.com/9B614pbpU6Nd9MJ0Bb1sQ02',
+    structural:  'https://buy.stripe.com/8x23cx8dI0oPaQN0Bb1sQ03',
+    tile:        'https://buy.stripe.com/14A28t65A3B12khes11sQ04',
+    investor:    'https://buy.stripe.com/28E5kFbpU7Rh8IFcjT1sQ05'
   };
 
   function startCheckout(courseId, btn) {
-    const course = STRIPE_PRICES[courseId];
-    if (!course) { showToast('Course not found.', 'error'); return; }
+    const url = PAYMENT_LINKS[courseId];
+    if (!url) { showToast('Course not found.', 'error'); return; }
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Redirecting...';
-    // Use Stripe's direct checkout URL with price ID
-    const successUrl = encodeURIComponent('https://diyrenovate.netlify.app/success.html');
-    window.location.href = `https://checkout.stripe.com/c/pay/${course.price}?success_url=${successUrl}`;
+    window.location.href = url;
   }
 
   // ── KLAVIYO EMAIL SUBSCRIBE ──
@@ -681,4 +669,4 @@
   }
 </script>
 </body>
-  </html>
+</html>
