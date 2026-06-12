@@ -573,32 +573,34 @@
     setTimeout(() => t.classList.remove('show'), 4000);
   }
 
-  // ── STRIPE CHECKOUT ──
-  async function startCheckout(courseId, btn) {
-    const original = btn.innerHTML;
+  // ── STRIPE CHECKOUT — Direct Stripe Hosted Pages ──
+  const STRIPE_CHECKOUT_URLS = {
+    masterclass: 'https://buy.stripe.com/fZedRh14s5BPf6o8ww?prefilled_promo_code=&client_reference_id=masterclass',
+    electrical:  'https://buy.stripe.com/fZedRh14s5BPf6o8ww?prefilled_promo_code=&client_reference_id=electrical',
+    plumbing:    'https://buy.stripe.com/fZedRh14s5BPf6o8ww?prefilled_promo_code=&client_reference_id=plumbing',
+    structural:  'https://buy.stripe.com/fZedRh14s5BPf6o8ww?prefilled_promo_code=&client_reference_id=structural',
+    tile:        'https://buy.stripe.com/fZedRh14s5BPf6o8ww?prefilled_promo_code=&client_reference_id=tile',
+    investor:    'https://buy.stripe.com/fZedRh14s5BPf6o8ww?prefilled_promo_code=&client_reference_id=investor'
+  };
+
+  // Direct Stripe hosted checkout — no server needed
+  const STRIPE_PRICES = {
+    masterclass: { price: 'price_1ThPvTRACCfzt8Fw44WKzptO', name: 'Complete Home Renovation Masterclass', amount: '$197' },
+    electrical:  { price: 'price_1ThPvWRACCfzt8FwhUSPTTsq', name: 'Residential Wiring Decoded', amount: '$97' },
+    plumbing:    { price: 'price_1ThPvaRACCfzt8Fw2k89d9iw', name: 'Rough-In to Finish Plumbing', amount: '$97' },
+    structural:  { price: 'price_1ThPvdRACCfzt8Fwn4SVYdFO', name: 'Structural & Framing Fundamentals', amount: '$97' },
+    tile:        { price: 'price_1ThPvgRACCfzt8FwehvI8f8a', name: 'Tile, Stone & Waterproofing', amount: '$97' },
+    investor:    { price: 'price_1ThPvjRACCfzt8Fwcp6nSY7P', name: 'Renovation for Real Estate Investors', amount: '$147' }
+  };
+
+  function startCheckout(courseId, btn) {
+    const course = STRIPE_PRICES[courseId];
+    if (!course) { showToast('Course not found.', 'error'); return; }
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Redirecting...';
-
-    try {
-      const res = await fetch('/.netlify/functions/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ courseId })
-      });
-
-      const data = await res.json();
-
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error(data.error || 'Could not create checkout session');
-      }
-    } catch (err) {
-      console.error(err);
-      showToast('Checkout unavailable — please try again shortly.', 'error');
-      btn.disabled = false;
-      btn.innerHTML = original;
-    }
+    // Use Stripe's direct checkout URL with price ID
+    const successUrl = encodeURIComponent('https://diyrenovate.netlify.app/success.html');
+    window.location.href = `https://checkout.stripe.com/c/pay/${course.price}?success_url=${successUrl}`;
   }
 
   // ── KLAVIYO EMAIL SUBSCRIBE ──
