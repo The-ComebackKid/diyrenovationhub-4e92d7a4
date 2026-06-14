@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Purchase Confirmed — DIY Renovation Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root{--black:#0a0a0a;--gold:#c9a84c;--gold-light:#e2c47a;--white:#f0ece4;--grey:#888880;--panel:#1a1a1a;--border:#2a2a2a;--font-display:'Bebas Neue',sans-serif;--font-body:'Barlow',sans-serif;--font-condensed:'Barlow Condensed',sans-serif;}
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--black);color:var(--white);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+  .check{width:80px;height:80px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 32px;animation:pop 0.5s ease forwards;}
+  @keyframes pop{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+  h1{font-family:var(--font-display);font-size:clamp(48px,8vw,80px);color:var(--gold);line-height:0.95;margin-bottom:20px;}
+  .sub{font-size:18px;font-weight:300;color:var(--grey);max-width:480px;line-height:1.6;margin-bottom:40px;}
+  .next-steps{background:var(--panel);border:1px solid var(--border);padding:40px 48px;max-width:520px;width:100%;text-align:left;margin-bottom:40px;}
+  .steps-title{font-family:var(--font-condensed);font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;}
+  .step{display:flex;gap:16px;margin-bottom:20px;align-items:flex-start;}
+  .step-num{font-family:var(--font-display);font-size:32px;color:var(--border);min-width:40px;line-height:1;}
+  .step-text{font-size:15px;font-weight:300;color:var(--grey);line-height:1.5;}
+  .step-text strong{color:var(--white);font-weight:600;}
+  .btn{font-family:var(--font-condensed);font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--black);background:var(--gold);border:none;padding:16px 48px;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.2s;}
+  .btn:hover{background:var(--gold-light);}
+</style>
+</head>
+<body>
+  <div class="check">✓</div>
+  <h1>YOU'RE IN.<br/>LET'S BUILD.</h1>
+  <p class="sub">Your purchase is confirmed. Check your email for access. Welcome to the hub.</p>
+  <div class="next-steps">
+    <div class="steps-title">What Happens Next</div>
+    <div class="step"><div class="step-num">01</div><div class="step-text"><strong>Check your email.</strong> Your receipt and course access link are on the way from info@diyrenovationhub.org.</div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-text"><strong>Download your materials.</strong> All PDFs, checklists, and guides are in your access link.</div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-text"><strong>Start learning.</strong> Full access from day one. Go at your own pace.</div></div>
+  </div>
+  <a class="btn" href="/">Back to Hub</a>
+</body>
+</html>
