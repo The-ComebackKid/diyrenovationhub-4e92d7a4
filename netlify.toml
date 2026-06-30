@@ -1,19 +1,24 @@
+# Force static — no framework build, no detection
 [build]
   publish = "."
-  command = ""
+  command = "echo 'Static site - no build needed'"
+  ignore = "/bin/false"
+
+[build.environment]
+  NETLIFY_USE_YARN = "false"
 
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = false
 
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
