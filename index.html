@@ -605,11 +605,10 @@ async function sendChat(preset){
   chatHistory.push({role:"user", content:text});
   document.getElementById("typing").style.display = "block";
   try {
-    const resp = await fetch("/.netlify/functions/chat", {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({messages: chatHistory})
-    });
+    const payload = { method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({messages: chatHistory}) };
+    let resp = await fetch("/.netlify/functions/chat", payload);
+    if (resp.status === 404) resp = await fetch("/.netlify/functions/ai-chat", payload);
     const data = await resp.json();
     if (!resp.ok || !data.reply) throw new Error(data.error || "No reply");
     chatHistory.push({role:"assistant", content:data.reply});
