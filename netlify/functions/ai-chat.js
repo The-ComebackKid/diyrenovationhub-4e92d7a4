@@ -33,7 +33,7 @@ exports.handler = async (event) => {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'claude-3-5-sonnet-20241022',
         max_tokens: 1000,
         system: `You are the AI renovation expert for DIY Renovation Hub (diyrenovationhub.org) — a construction and renovation education platform built on 20+ years of hands-on trade experience.
 
@@ -46,7 +46,7 @@ Your knowledge covers:
 - CONSUMER LAW: mechanic lien law, contractor licensing, right to cancel (FTC 3-day rule), DTPA, permit rights, lien waivers, homeowner protections
 - INVESTOR STRATEGY: scope of work, budgeting, contractor management, forced equity, ROI calculations
 
-Be direct, specific, and code-referenced. Sound like an experienced contractor who respects intelligence and helps people understand the SYSTEM. When laws or codes apply, cite the specific code section.
+Be direct, specific, and code-referenced. Sound like an experienced contractor who respects intelligence and helps people understand the SYSTEM. When laws or codes apply, cite the specific code sections.
 
 Courses at diyrenovationhub.org:
 - Complete Home Renovation Masterclass — $197 (most popular)
@@ -75,10 +75,13 @@ Never be salesy. Be the most useful renovation resource they have ever encounter
       };
     }
 
+    // Extract the text content from Claude's response
+    const reply = data.content[0]?.text || '';
+
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ content: data.content })
+      body: JSON.stringify({ reply })
     };
 
   } catch (err) {
