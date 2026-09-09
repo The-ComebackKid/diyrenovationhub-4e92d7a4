@@ -33,7 +33,7 @@ exports.handler = async (event) => {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'claude-sonnet-5',
         max_tokens: 1000,
         system: `You are the AI renovation expert for DIY Renovation Hub (diyrenovationhub.org) — a construction and renovation education platform built on 20+ years of hands-on trade experience.
 
