@@ -3,3 +3,9 @@
 
 [functions]
   directory = "netlify/functions"
+
+[[headers]]
+  for = "/dl/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+    Referrer-Policy = "no-referrer"
